@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Mach service name — must match SGHelperMachServiceName in Swift -->
+    <key>Label</key>
+    <string>com.woady.phantom.helper</string>
+
+    <!-- Path where SMJobBless installs the helper binary -->
+    <key>Program</key>
+    <string>/Library/PrivilegedHelperTools/com.woady.phantom.helper</string>
+
+    <!-- Expose as a Mach service so NSXPCConnection can find it -->
+    <key>MachServices</key>
+    <dict>
+        <key>com.woady.phantom.helper</key>
+        <true/>
+    </dict>
+
+    <!-- Only the main app bundle may connect to this helper.
+         The value must be a valid code-signing requirement string.
+         Replace the Team ID (NYQ3P2YWL5) with your Apple Developer Team ID. -->
+    <key>SMAuthorizedClients</key>
+    <array>
+        <string>identifier "com.woady.phantom" and anchor apple generic and certificate leaf[subject.OU] = "NYQ3P2YWL5"</string>
+    </array>
+</dict>
+</plist>

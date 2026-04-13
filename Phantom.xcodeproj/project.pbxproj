@@ -1,0 +1,864 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		766A154F2F6604D900C52EE0 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15122F65E5A900C52EE0 /* AppModel.swift */; };
+		766A15512F6604E300C52EE0 /* AgentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15142F65E5A900C52EE0 /* AgentStatus.swift */; };
+		766A15532F6604EB00C52EE0 /* Incident.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15132F65E5A900C52EE0 /* Incident.swift */; };
+		766A15552F6604F200C52EE0 /* StarupEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A152D2F65F72300C52EE0 /* StarupEvent.swift */; };
+		766A15572F66050000C52EE0 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15312F65F74500C52EE0 /* MainView.swift */; };
+		766A15592F66050F00C52EE0 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15362F65F7C400C52EE0 /* MenuBarView.swift */; };
+		766A155A2F66051800C52EE0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15252F65EFCD00C52EE0 /* SettingsView.swift */; };
+		766A155B2F66052200C52EE0 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15472F65F8B300C52EE0 /* AppSettings.swift */; };
+		766A15642F66094B00C52EE0 /* ProcessMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15632F66094B00C52EE0 /* ProcessMonitor.swift */; };
+		766A15692F660CDF00C52EE0 /* Severity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15682F660CDF00C52EE0 /* Severity.swift */; };
+		766A156E2F660EF600C52EE0 /* PersistenceScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A156D2F660EF600C52EE0 /* PersistenceScanner.swift */; };
+		766A15722F66201F00C52EE0 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15712F66201F00C52EE0 /* NetworkMonitor.swift */; };
+		766A15772F66393E00C52EE0 /* IncidentFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15762F66393E00C52EE0 /* IncidentFilter.swift */; };
+		766A157C2F66398900C52EE0 /* MitreTechnique.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A157B2F66398900C52EE0 /* MitreTechnique.swift */; };
+		766A157F2F6639BD00C52EE0 /* TimelineEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A157E2F6639BD00C52EE0 /* TimelineEvent.swift */; };
+		766A15892F671DE500C52EE0 /* DetectionConfidence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15882F671DE500C52EE0 /* DetectionConfidence.swift */; };
+		766A158B2F67213D00C52EE0 /* LogWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A158A2F67213D00C52EE0 /* LogWatcher.swift */; };
+		766A158E2F6726E700C52EE0 /* IncidentStateFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A158D2F6726E700C52EE0 /* IncidentStateFilter.swift */; };
+		766A15932F6798BD00C52EE0 /* DetectionPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15922F6798BD00C52EE0 /* DetectionPresentation.swift */; };
+		766A15962F679D0900C52EE0 /* IncidentPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15952F679D0900C52EE0 /* IncidentPresentation.swift */; };
+		766A15982F68249C00C52EE0 /* MonitoringHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15972F68249C00C52EE0 /* MonitoringHealth.swift */; };
+		766A159B2F6824FC00C52EE0 /* PermissionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A159A2F6824FC00C52EE0 /* PermissionState.swift */; };
+		766A159D2F6829F600C52EE0 /* AuditLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A159C2F6829F600C52EE0 /* AuditLog.swift */; };
+		766A15A02F682A3700C52EE0 /* TrustDecision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A159F2F682A3700C52EE0 /* TrustDecision.swift */; };
+		766A15A22F682D5600C52EE0 /* AuditEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15A12F682D5600C52EE0 /* AuditEvent.swift */; };
+		766A15A42F682D8200C52EE0 /* SuppressionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15A32F682D8200C52EE0 /* SuppressionRule.swift */; };
+		766A15A82F6869C100C52EE0 /* DashboardPresentationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15A72F6869C100C52EE0 /* DashboardPresentationExtensions.swift */; };
+		766A15AC2F6885F300C52EE0 /* TrustPresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15AB2F6885F300C52EE0 /* TrustPresentation.swift */; };
+		766A15AF2F688DAC00C52EE0 /* AuditTrailStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15AE2F688DAC00C52EE0 /* AuditTrailStore.swift */; };
+		766A15B12F688DFE00C52EE0 /* AuditPresentationExtensions..swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15B02F688DFE00C52EE0 /* AuditPresentationExtensions..swift */; };
+		766A15BB2F68AE5A00C52EE0 /* TelemetrySnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15BA2F68AE5A00C52EE0 /* TelemetrySnapshot.swift */; };
+		766A15BD2F69F59F00C52EE0 /* HealthStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15BC2F69F59F00C52EE0 /* HealthStatus.swift */; };
+		766A15C02F69000000C52EE0 /* SuppressionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766A15BF2F69000000C52EE0 /* SuppressionStore.swift */; };
+		A10000012F70000100C52EE0 /* TelemetryBroker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000002F70000100C52EE0 /* TelemetryBroker.swift */; };
+		A20000022F70100100C52EE0 /* KeychainHMAC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000012F70100100C52EE0 /* KeychainHMAC.swift */; };
+		A20000042F70100100C52EE0 /* ScanRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000032F70100100C52EE0 /* ScanRecord.swift */; };
+		A20000062F70100100C52EE0 /* ScanHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000052F70100100C52EE0 /* ScanHistoryStore.swift */; };
+		A20000082F70200100C52EE0 /* ThreatIntelFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000072F70200100C52EE0 /* ThreatIntelFeed.swift */; };
+		B300000D0000000000C52EE0 /* AuditChainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B300000C0000000000C52EE0 /* AuditChainTests.swift */; };
+		B300000F0000000000C52EE0 /* DetectionRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B300000E0000000000C52EE0 /* DetectionRulesTests.swift */; };
+		B30000110000000000C52EE0 /* RiskScoringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000100000000000C52EE0 /* RiskScoringTests.swift */; };
+		B30000130000000000C52EE0 /* ThreatIntelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000120000000000C52EE0 /* ThreatIntelTests.swift */; };
+		B30000150000000000C52EE0 /* MitreMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000140000000000C52EE0 /* MitreMappingTests.swift */; };
+		C40000012F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000082F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift */; };
+		C40000022F72000000C52EE0 /* PrivilegedHelperClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000092F72000000C52EE0 /* PrivilegedHelperClient.swift */; };
+		C40000042F72000000C52EE0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400000B2F72000000C52EE0 /* main.swift */; };
+		C40000052F72000000C52EE0 /* PrivilegedHelperDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400000C2F72000000C52EE0 /* PrivilegedHelperDelegate.swift */; };
+		C40000062F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000082F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift */; };
+		C40000072F72000000C52EE0 /* com.woady.phantom.helper in Copy Helper */ = {isa = PBXBuildFile; fileRef = C400000D2F72000000C52EE0 /* com.woady.phantom.helper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		2CD01EA12C0F6C641DCF7603 /* PacketEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A675BA57572583DC9B113E7 /* PacketEvent.swift */; };
+		0C06ABEC8501677DE7108AA4 /* TSharkScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F1F7C637923BEF3D2B622D /* TSharkScanner.swift */; };
+		8518B43519467A107C18D4A9 /* TcpdumpScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B97C99A1D1E9C0A40A38D /* TcpdumpScanner.swift */; };
+		09AA0E87E962F5F49DC29BC2 /* ZeekScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE360C9D9A6D17BFB29E9E12 /* ZeekScanner.swift */; };
+		FC9F3681F8F53878D4A654F1 /* SuricataScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60F016301FA2A201FBE40ED /* SuricataScanner.swift */; };
+		6798567B81AD72AD11380B4D /* NgrepScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C10BF7155C6FD4EC8A85FC /* NgrepScanner.swift */; };
+		C178D86F61C060329A44463F /* NetworkMinerScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84076D258970590611AD596E /* NetworkMinerScanner.swift */; };
+		842467487A94810181BA57A3 /* PacketCaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76128648D55987C3B80C8B6B /* PacketCaptureEngine.swift */; };
+		25F38FFE38328149746DC672 /* NetworkIntelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DAA420E33DC38343C8411D /* NetworkIntelView.swift */; };
+		D5E8410F76B23A9C51FE6027 /* ScanWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A72F91C4D05E6F28A1093C /* ScanWorker.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B300000B0000000000C52EE0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 760931492F65C41700AB5D31 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 760931502F65C41700AB5D31;
+			remoteInfo = Phantom;
+		};
+		C40000162F72000000C52EE0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 760931492F65C41700AB5D31 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C40000152F72000000C52EE0;
+			remoteInfo = com.woady.phantom.helper;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C40000132F72000000C52EE0 /* Copy Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchDaemons;
+			dstSubfolderSpec = 16;
+			files = (
+				C40000072F72000000C52EE0 /* com.woady.phantom.helper in Copy Helper */,
+			);
+			name = "Copy Helper";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		760931512F65C41700AB5D31 /* Phantom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Phantom.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		766A15122F65E5A900C52EE0 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		766A15132F65E5A900C52EE0 /* Incident.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Incident.swift; sourceTree = "<group>"; };
+		766A15142F65E5A900C52EE0 /* AgentStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentStatus.swift; sourceTree = "<group>"; };
+		766A15252F65EFCD00C52EE0 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		766A152D2F65F72300C52EE0 /* StarupEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarupEvent.swift; sourceTree = "<group>"; };
+		766A15312F65F74500C52EE0 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		766A15362F65F7C400C52EE0 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		766A15472F65F8B300C52EE0 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		766A15632F66094B00C52EE0 /* ProcessMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessMonitor.swift; sourceTree = "<group>"; };
+		766A15682F660CDF00C52EE0 /* Severity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Severity.swift; sourceTree = "<group>"; };
+		766A156D2F660EF600C52EE0 /* PersistenceScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceScanner.swift; sourceTree = "<group>"; };
+		766A15712F66201F00C52EE0 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		766A15762F66393E00C52EE0 /* IncidentFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncidentFilter.swift; sourceTree = "<group>"; };
+		766A157B2F66398900C52EE0 /* MitreTechnique.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitreTechnique.swift; sourceTree = "<group>"; };
+		766A157E2F6639BD00C52EE0 /* TimelineEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineEvent.swift; sourceTree = "<group>"; };
+		766A15882F671DE500C52EE0 /* DetectionConfidence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionConfidence.swift; sourceTree = "<group>"; };
+		766A158A2F67213D00C52EE0 /* LogWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogWatcher.swift; sourceTree = "<group>"; };
+		766A158D2F6726E700C52EE0 /* IncidentStateFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncidentStateFilter.swift; sourceTree = "<group>"; };
+		766A15922F6798BD00C52EE0 /* DetectionPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionPresentation.swift; sourceTree = "<group>"; };
+		766A15952F679D0900C52EE0 /* IncidentPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncidentPresentation.swift; sourceTree = "<group>"; };
+		766A15972F68249C00C52EE0 /* MonitoringHealth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoringHealth.swift; sourceTree = "<group>"; };
+		766A159A2F6824FC00C52EE0 /* PermissionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionState.swift; sourceTree = "<group>"; };
+		766A159C2F6829F600C52EE0 /* AuditLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditLog.swift; sourceTree = "<group>"; };
+		766A159F2F682A3700C52EE0 /* TrustDecision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustDecision.swift; sourceTree = "<group>"; };
+		766A15A12F682D5600C52EE0 /* AuditEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditEvent.swift; sourceTree = "<group>"; };
+		766A15A32F682D8200C52EE0 /* SuppressionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppressionRule.swift; sourceTree = "<group>"; };
+		766A15A72F6869C100C52EE0 /* DashboardPresentationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPresentationExtensions.swift; sourceTree = "<group>"; };
+		766A15AB2F6885F300C52EE0 /* TrustPresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustPresentation.swift; sourceTree = "<group>"; };
+		766A15AE2F688DAC00C52EE0 /* AuditTrailStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditTrailStore.swift; sourceTree = "<group>"; };
+		766A15B02F688DFE00C52EE0 /* AuditPresentationExtensions..swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditPresentationExtensions..swift; sourceTree = "<group>"; };
+		766A15BA2F68AE5A00C52EE0 /* TelemetrySnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetrySnapshot.swift; sourceTree = "<group>"; };
+		766A15BC2F69F59F00C52EE0 /* HealthStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthStatus.swift; sourceTree = "<group>"; };
+		766A15BF2F69000000C52EE0 /* SuppressionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppressionStore.swift; sourceTree = "<group>"; };
+		A10000002F70000100C52EE0 /* TelemetryBroker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryBroker.swift; sourceTree = "<group>"; };
+		A20000012F70100100C52EE0 /* KeychainHMAC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHMAC.swift; sourceTree = "<group>"; };
+		A20000032F70100100C52EE0 /* ScanRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanRecord.swift; sourceTree = "<group>"; };
+		A20000052F70100100C52EE0 /* ScanHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanHistoryStore.swift; sourceTree = "<group>"; };
+		A20000072F70200100C52EE0 /* ThreatIntelFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreatIntelFeed.swift; sourceTree = "<group>"; };
+		B30000020000000000C52EE0 /* PhantomTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhantomTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B300000C0000000000C52EE0 /* AuditChainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditChainTests.swift; sourceTree = "<group>"; };
+		B300000E0000000000C52EE0 /* DetectionRulesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionRulesTests.swift; sourceTree = "<group>"; };
+		B30000100000000000C52EE0 /* RiskScoringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskScoringTests.swift; sourceTree = "<group>"; };
+		B30000120000000000C52EE0 /* ThreatIntelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreatIntelTests.swift; sourceTree = "<group>"; };
+		B30000140000000000C52EE0 /* MitreMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitreMappingTests.swift; sourceTree = "<group>"; };
+		C40000082F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGPrivilegedHelperProtocol.swift; sourceTree = "<group>"; };
+		C40000092F72000000C52EE0 /* PrivilegedHelperClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivilegedHelperClient.swift; sourceTree = "<group>"; };
+		C400000B2F72000000C52EE0 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		C400000C2F72000000C52EE0 /* PrivilegedHelperDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivilegedHelperDelegate.swift; sourceTree = "<group>"; };
+		C400000D2F72000000C52EE0 /* com.woady.phantom.helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = com.woady.phantom.helper; sourceTree = BUILT_PRODUCTS_DIR; };
+		C400000E2F72000000C52EE0 /* Phantom.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Phantom.entitlements; sourceTree = "<group>"; };
+		C400000F2F72000000C52EE0 /* PrivilegedHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PrivilegedHelper.entitlements; sourceTree = "<group>"; };
+		3A675BA57572583DC9B113E7 /* PacketEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketEvent.swift; sourceTree = "<group>"; };
+		68F1F7C637923BEF3D2B622D /* TSharkScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSharkScanner.swift; sourceTree = "<group>"; };
+		031B97C99A1D1E9C0A40A38D /* TcpdumpScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TcpdumpScanner.swift; sourceTree = "<group>"; };
+		DE360C9D9A6D17BFB29E9E12 /* ZeekScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeekScanner.swift; sourceTree = "<group>"; };
+		A60F016301FA2A201FBE40ED /* SuricataScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuricataScanner.swift; sourceTree = "<group>"; };
+		59C10BF7155C6FD4EC8A85FC /* NgrepScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NgrepScanner.swift; sourceTree = "<group>"; };
+		84076D258970590611AD596E /* NetworkMinerScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMinerScanner.swift; sourceTree = "<group>"; };
+		76128648D55987C3B80C8B6B /* PacketCaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketCaptureEngine.swift; sourceTree = "<group>"; };
+		17DAA420E33DC38343C8411D /* NetworkIntelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkIntelView.swift; sourceTree = "<group>"; };
+		B3A72F91C4D05E6F28A1093C /* ScanWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanWorker.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		760931642F65C62A00AB5D31 /* Phantom */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Phantom;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7609314E2F65C41700AB5D31 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B30000040000000000C52EE0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C40000122F72000000C52EE0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		760931482F65C41700AB5D31 = {
+			isa = PBXGroup;
+			children = (
+				760931632F65C61700AB5D31 /* App */,
+				C40000102F72000000C52EE0 /* PrivilegedHelper */,
+				B30000090000000000C52EE0 /* PhantomTests */,
+				766A15122F65E5A900C52EE0 /* AppModel.swift */,
+				766A152D2F65F72300C52EE0 /* StarupEvent.swift */,
+				766A158D2F6726E700C52EE0 /* IncidentStateFilter.swift */,
+				766A15132F65E5A900C52EE0 /* Incident.swift */,
+				766A157B2F66398900C52EE0 /* MitreTechnique.swift */,
+				766A15142F65E5A900C52EE0 /* AgentStatus.swift */,
+				766A15682F660CDF00C52EE0 /* Severity.swift */,
+				766A15472F65F8B300C52EE0 /* AppSettings.swift */,
+				766A157E2F6639BD00C52EE0 /* TimelineEvent.swift */,
+				766A15762F66393E00C52EE0 /* IncidentFilter.swift */,
+				766A15882F671DE500C52EE0 /* DetectionConfidence.swift */,
+				766A15312F65F74500C52EE0 /* MainView.swift */,
+				766A15252F65EFCD00C52EE0 /* SettingsView.swift */,
+				766A15362F65F7C400C52EE0 /* MenuBarView.swift */,
+				766A158A2F67213D00C52EE0 /* LogWatcher.swift */,
+				766A156D2F660EF600C52EE0 /* PersistenceScanner.swift */,
+				766A15712F66201F00C52EE0 /* NetworkMonitor.swift */,
+				3A675BA57572583DC9B113E7 /* PacketEvent.swift */,
+				68F1F7C637923BEF3D2B622D /* TSharkScanner.swift */,
+				031B97C99A1D1E9C0A40A38D /* TcpdumpScanner.swift */,
+				DE360C9D9A6D17BFB29E9E12 /* ZeekScanner.swift */,
+				A60F016301FA2A201FBE40ED /* SuricataScanner.swift */,
+				59C10BF7155C6FD4EC8A85FC /* NgrepScanner.swift */,
+				84076D258970590611AD596E /* NetworkMinerScanner.swift */,
+				76128648D55987C3B80C8B6B /* PacketCaptureEngine.swift */,
+				B3A72F91C4D05E6F28A1093C /* ScanWorker.swift */,
+				17DAA420E33DC38343C8411D /* NetworkIntelView.swift */,
+				766A15922F6798BD00C52EE0 /* DetectionPresentation.swift */,
+				766A15952F679D0900C52EE0 /* IncidentPresentation.swift */,
+				766A15972F68249C00C52EE0 /* MonitoringHealth.swift */,
+				766A159A2F6824FC00C52EE0 /* PermissionState.swift */,
+				766A15A32F682D8200C52EE0 /* SuppressionRule.swift */,
+				766A15BF2F69000000C52EE0 /* SuppressionStore.swift */,
+				766A15A72F6869C100C52EE0 /* DashboardPresentationExtensions.swift */,
+				766A15AB2F6885F300C52EE0 /* TrustPresentation.swift */,
+				766A159F2F682A3700C52EE0 /* TrustDecision.swift */,
+				766A15B02F688DFE00C52EE0 /* AuditPresentationExtensions..swift */,
+				766A15A12F682D5600C52EE0 /* AuditEvent.swift */,
+				766A15AE2F688DAC00C52EE0 /* AuditTrailStore.swift */,
+				766A159C2F6829F600C52EE0 /* AuditLog.swift */,
+				766A15BC2F69F59F00C52EE0 /* HealthStatus.swift */,
+				766A15632F66094B00C52EE0 /* ProcessMonitor.swift */,
+				766A15BA2F68AE5A00C52EE0 /* TelemetrySnapshot.swift */,
+				A10000002F70000100C52EE0 /* TelemetryBroker.swift */,
+				A20000012F70100100C52EE0 /* KeychainHMAC.swift */,
+				A20000032F70100100C52EE0 /* ScanRecord.swift */,
+				A20000052F70100100C52EE0 /* ScanHistoryStore.swift */,
+				A20000072F70200100C52EE0 /* ThreatIntelFeed.swift */,
+				C40000082F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift */,
+				C40000092F72000000C52EE0 /* PrivilegedHelperClient.swift */,
+				C400000E2F72000000C52EE0 /* Phantom.entitlements */,
+				760931522F65C41700AB5D31 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		760931522F65C41700AB5D31 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				760931512F65C41700AB5D31 /* Phantom.app */,
+				B30000020000000000C52EE0 /* PhantomTests.xctest */,
+				C400000D2F72000000C52EE0 /* com.woady.phantom.helper */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		760931632F65C61700AB5D31 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				760931642F65C62A00AB5D31 /* Phantom */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		B30000090000000000C52EE0 /* PhantomTests */ = {
+			isa = PBXGroup;
+			children = (
+				B300000C0000000000C52EE0 /* AuditChainTests.swift */,
+				B300000E0000000000C52EE0 /* DetectionRulesTests.swift */,
+				B30000100000000000C52EE0 /* RiskScoringTests.swift */,
+				B30000120000000000C52EE0 /* ThreatIntelTests.swift */,
+				B30000140000000000C52EE0 /* MitreMappingTests.swift */,
+			);
+			path = PhantomTests;
+			sourceTree = "<group>";
+		};
+		C40000102F72000000C52EE0 /* PrivilegedHelper */ = {
+			isa = PBXGroup;
+			children = (
+				C400000B2F72000000C52EE0 /* main.swift */,
+				C400000C2F72000000C52EE0 /* PrivilegedHelperDelegate.swift */,
+				C400000F2F72000000C52EE0 /* PrivilegedHelper.entitlements */,
+			);
+			path = PrivilegedHelper;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		760931502F65C41700AB5D31 /* Phantom */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7609315C2F65C41800AB5D31 /* Build configuration list for PBXNativeTarget "Phantom" */;
+			buildPhases = (
+				7609314D2F65C41700AB5D31 /* Sources */,
+				7609314E2F65C41700AB5D31 /* Frameworks */,
+				7609314F2F65C41700AB5D31 /* Resources */,
+				C40000132F72000000C52EE0 /* Copy Helper */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C40000172F72000000C52EE0 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				760931642F65C62A00AB5D31 /* Phantom */,
+			);
+			name = Phantom;
+			packageProductDependencies = (
+			);
+			productName = Phantom;
+			productReference = 760931512F65C41700AB5D31 /* Phantom.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B30000010000000000C52EE0 /* PhantomTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B30000060000000000C52EE0 /* Build configuration list for PBXNativeTarget "PhantomTests" */;
+			buildPhases = (
+				B30000030000000000C52EE0 /* Sources */,
+				B30000040000000000C52EE0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B300000A0000000000C52EE0 /* PBXTargetDependency */,
+			);
+			name = PhantomTests;
+			productName = PhantomTests;
+			productReference = B30000020000000000C52EE0 /* PhantomTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C40000152F72000000C52EE0 /* com.woady.phantom.helper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C400001A2F72000000C52EE0 /* Build configuration list for PBXNativeTarget "com.woady.phantom.helper" */;
+			buildPhases = (
+				C40000112F72000000C52EE0 /* Sources */,
+				C40000122F72000000C52EE0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = com.woady.phantom.helper;
+			productName = com.woady.phantom.helper;
+			productReference = C400000D2F72000000C52EE0 /* com.woady.phantom.helper */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		760931492F65C41700AB5D31 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2630;
+				LastUpgradeCheck = 2630;
+				TargetAttributes = {
+					760931502F65C41700AB5D31 = {
+						CreatedOnToolsVersion = 26.3;
+						LastSwiftMigration = 2630;
+					};
+					B30000010000000000C52EE0 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = 760931502F65C41700AB5D31;
+					};
+					C40000152F72000000C52EE0 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+				};
+			};
+			buildConfigurationList = 7609314C2F65C41700AB5D31 /* Build configuration list for PBXProject "Phantom" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 760931482F65C41700AB5D31;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 760931522F65C41700AB5D31 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				760931502F65C41700AB5D31 /* Phantom */,
+				B30000010000000000C52EE0 /* PhantomTests */,
+				C40000152F72000000C52EE0 /* com.woady.phantom.helper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7609314F2F65C41700AB5D31 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7609314D2F65C41700AB5D31 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				766A157C2F66398900C52EE0 /* MitreTechnique.swift in Sources */,
+				766A156E2F660EF600C52EE0 /* PersistenceScanner.swift in Sources */,
+				766A15892F671DE500C52EE0 /* DetectionConfidence.swift in Sources */,
+				766A15A02F682A3700C52EE0 /* TrustDecision.swift in Sources */,
+				766A15692F660CDF00C52EE0 /* Severity.swift in Sources */,
+				766A15A82F6869C100C52EE0 /* DashboardPresentationExtensions.swift in Sources */,
+				766A15B12F688DFE00C52EE0 /* AuditPresentationExtensions..swift in Sources */,
+				766A15772F66393E00C52EE0 /* IncidentFilter.swift in Sources */,
+				766A155B2F66052200C52EE0 /* AppSettings.swift in Sources */,
+				766A155A2F66051800C52EE0 /* SettingsView.swift in Sources */,
+				766A15592F66050F00C52EE0 /* MenuBarView.swift in Sources */,
+				766A15722F66201F00C52EE0 /* NetworkMonitor.swift in Sources */,
+				2CD01EA12C0F6C641DCF7603 /* PacketEvent.swift in Sources */,
+				0C06ABEC8501677DE7108AA4 /* TSharkScanner.swift in Sources */,
+				8518B43519467A107C18D4A9 /* TcpdumpScanner.swift in Sources */,
+				09AA0E87E962F5F49DC29BC2 /* ZeekScanner.swift in Sources */,
+				FC9F3681F8F53878D4A654F1 /* SuricataScanner.swift in Sources */,
+				6798567B81AD72AD11380B4D /* NgrepScanner.swift in Sources */,
+				C178D86F61C060329A44463F /* NetworkMinerScanner.swift in Sources */,
+				842467487A94810181BA57A3 /* PacketCaptureEngine.swift in Sources */,
+				D5E8410F76B23A9C51FE6027 /* ScanWorker.swift in Sources */,
+				25F38FFE38328149746DC672 /* NetworkIntelView.swift in Sources */,
+				766A15A22F682D5600C52EE0 /* AuditEvent.swift in Sources */,
+				766A15AC2F6885F300C52EE0 /* TrustPresentation.swift in Sources */,
+				766A15572F66050000C52EE0 /* MainView.swift in Sources */,
+				766A159B2F6824FC00C52EE0 /* PermissionState.swift in Sources */,
+				766A158E2F6726E700C52EE0 /* IncidentStateFilter.swift in Sources */,
+				766A15982F68249C00C52EE0 /* MonitoringHealth.swift in Sources */,
+				766A15552F6604F200C52EE0 /* StarupEvent.swift in Sources */,
+				766A158B2F67213D00C52EE0 /* LogWatcher.swift in Sources */,
+				766A15932F6798BD00C52EE0 /* DetectionPresentation.swift in Sources */,
+				766A15532F6604EB00C52EE0 /* Incident.swift in Sources */,
+				766A15512F6604E300C52EE0 /* AgentStatus.swift in Sources */,
+				766A159D2F6829F600C52EE0 /* AuditLog.swift in Sources */,
+				766A15BB2F68AE5A00C52EE0 /* TelemetrySnapshot.swift in Sources */,
+				A10000012F70000100C52EE0 /* TelemetryBroker.swift in Sources */,
+				766A15BD2F69F59F00C52EE0 /* HealthStatus.swift in Sources */,
+				766A154F2F6604D900C52EE0 /* AppModel.swift in Sources */,
+				766A15642F66094B00C52EE0 /* ProcessMonitor.swift in Sources */,
+				766A15962F679D0900C52EE0 /* IncidentPresentation.swift in Sources */,
+				766A157F2F6639BD00C52EE0 /* TimelineEvent.swift in Sources */,
+				766A15AF2F688DAC00C52EE0 /* AuditTrailStore.swift in Sources */,
+				766A15A42F682D8200C52EE0 /* SuppressionRule.swift in Sources */,
+				766A15C02F69000000C52EE0 /* SuppressionStore.swift in Sources */,
+				A20000022F70100100C52EE0 /* KeychainHMAC.swift in Sources */,
+				A20000042F70100100C52EE0 /* ScanRecord.swift in Sources */,
+				A20000062F70100100C52EE0 /* ScanHistoryStore.swift in Sources */,
+				A20000082F70200100C52EE0 /* ThreatIntelFeed.swift in Sources */,
+				C40000012F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift in Sources */,
+				C40000022F72000000C52EE0 /* PrivilegedHelperClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B30000030000000000C52EE0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B300000D0000000000C52EE0 /* AuditChainTests.swift in Sources */,
+				B300000F0000000000C52EE0 /* DetectionRulesTests.swift in Sources */,
+				B30000110000000000C52EE0 /* RiskScoringTests.swift in Sources */,
+				B30000130000000000C52EE0 /* ThreatIntelTests.swift in Sources */,
+				B30000150000000000C52EE0 /* MitreMappingTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C40000112F72000000C52EE0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C40000062F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift in Sources */,
+				C40000042F72000000C52EE0 /* main.swift in Sources */,
+				C40000052F72000000C52EE0 /* PrivilegedHelperDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B300000A0000000000C52EE0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 760931502F65C41700AB5D31 /* Phantom */;
+			targetProxy = B300000B0000000000C52EE0 /* PBXContainerItemProxy */;
+		};
+		C40000172F72000000C52EE0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C40000152F72000000C52EE0 /* com.woady.phantom.helper */;
+			targetProxy = C40000162F72000000C52EE0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		7609315A2F65C41800AB5D31 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		7609315B2F65C41800AB5D31 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		7609315D2F65C41800AB5D31 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				AUTOMATION_APPLE_EVENTS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Phantom.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NYQ3P2YWL5;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.woady.phantom;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		7609315E2F65C41800AB5D31 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				AUTOMATION_APPLE_EVENTS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Phantom.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NYQ3P2YWL5;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.woady.phantom;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B30000070000000000C52EE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.woady.phantom.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Phantom.app/Contents/MacOS/Phantom";
+			};
+			name = Debug;
+		};
+		B30000080000000000C52EE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.woady.phantom.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Phantom.app/Contents/MacOS/Phantom";
+			};
+			name = Release;
+		};
+		C40000182F72000000C52EE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AUTOMATION_APPLE_EVENTS = NO;
+				CODE_SIGN_ENTITLEMENTS = PrivilegedHelper/PrivilegedHelper.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.woady.phantom.helper;
+				PRODUCT_NAME = com.woady.phantom.helper;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C40000192F72000000C52EE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AUTOMATION_APPLE_EVENTS = NO;
+				CODE_SIGN_ENTITLEMENTS = PrivilegedHelper/PrivilegedHelper.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.woady.phantom.helper;
+				PRODUCT_NAME = com.woady.phantom.helper;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = NO;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7609314C2F65C41700AB5D31 /* Build configuration list for PBXProject "Phantom" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7609315A2F65C41800AB5D31 /* Debug */,
+				7609315B2F65C41800AB5D31 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7609315C2F65C41800AB5D31 /* Build configuration list for PBXNativeTarget "Phantom" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7609315D2F65C41800AB5D31 /* Debug */,
+				7609315E2F65C41800AB5D31 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B30000060000000000C52EE0 /* Build configuration list for PBXNativeTarget "PhantomTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B30000070000000000C52EE0 /* Debug */,
+				B30000080000000000C52EE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C400001A2F72000000C52EE0 /* Build configuration list for PBXNativeTarget "com.woady.phantom.helper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C40000182F72000000C52EE0 /* Debug */,
+				C40000192F72000000C52EE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 760931492F65C41700AB5D31 /* Project object */;
+}
