@@ -422,7 +422,7 @@ final class AppModel: NSObject, ObservableObject {
         }
         if !medium.isEmpty {
             scheduleNotification(
-                identifier: "sentinelguard.medium-batch.\(Date().timeIntervalSince1970)",
+                identifier: "phantom.medium-batch.\(Date().timeIntervalSince1970)",
                 title: "Phantom — \(medium.count) new finding\(medium.count == 1 ? "" : "s")",
                 body: medium.prefix(2).map { $0.name }.joined(separator: ", "),
                 critical: false

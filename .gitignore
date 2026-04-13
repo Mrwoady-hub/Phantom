@@ -1,1 +1,26 @@
+# Local tool state
 .claude/
+
+# macOS
+.DS_Store
+
+# Xcode user state
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Xcode build products
+build/
+DerivedData/
+.build/
+
+# Swift Package Manager
+.swiftpm/
+Packages/
+
+# Local runtime artifacts
+tmp/
+logs/
+*.log
