@@ -1,5 +1,9 @@
 # Phantom
 
+<p align="center">
+  <img src="docs/assets/phantom-mark.svg" alt="Phantom mark" width="164">
+</p>
+
 Native macOS threat monitoring built in Swift.
 
 [![CI](https://github.com/Mrwoady-hub/Phantom/actions/workflows/ci.yml/badge.svg)](https://github.com/Mrwoady-hub/Phantom/actions/workflows/ci.yml)
@@ -135,6 +139,7 @@ Near-term priorities:
 
 The current transition release notes are here:
 
+- ![Phantom v1.1.0 release banner](docs/assets/release-banner-v1.1.0.svg)
 - [RELEASE_NOTES_v1.1.0.md](RELEASE_NOTES_v1.1.0.md)
 
 ## License

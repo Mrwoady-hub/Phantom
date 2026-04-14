@@ -1,0 +1,37 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1020"/>
+      <stop offset="1" stop-color="#171D33"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="243" y1="148" x2="1028" y2="478" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" rx="32" fill="url(#bg)"/>
+  <circle cx="1087" cy="120" r="210" fill="#1A2240" fill-opacity="0.45"/>
+  <circle cx="1148" cy="84" r="138" fill="#0F1730" fill-opacity="0.75"/>
+  <rect x="72" y="86" width="92" height="92" rx="28" fill="#12182C" stroke="#334064" stroke-width="3"/>
+  <path d="M118 108L148 122V146C148 171 132 191 118 199C104 191 88 171 88 146V122L118 108Z" fill="none" stroke="url(#accent)" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M118 128C106 128 96 138 96 150V151H140V150C140 138 130 128 118 128Z" fill="url(#accent)"/>
+  <circle cx="118" cy="151" r="7" fill="#F8FAFC"/>
+  <path d="M118 157L127 176H109L118 157Z" fill="#F8FAFC"/>
+  <text x="192" y="126" fill="#E2E8F0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="28" font-weight="700">Phantom</text>
+  <text x="192" y="163" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="22">Native macOS threat monitoring</text>
+  <text x="72" y="284" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="76" font-weight="800">v1.1.0</text>
+  <text x="72" y="344" fill="#CBD5E1" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="34" font-weight="600">Phantom identity transition release</text>
+  <text x="72" y="404" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24">New Swift/macOS app structure, cleaner repo hygiene, GitHub refresh, and release notes.</text>
+  <rect x="72" y="462" width="304" height="58" rx="16" fill="#131A30" stroke="#334064"/>
+  <text x="96" y="499" fill="#A5B4FC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700">SwiftUI</text>
+  <text x="216" y="499" fill="#67E8F9" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700">Security.framework</text>
+  <text x="490" y="182" fill="#E2E8F0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="26" font-weight="700">Release Highlights</text>
+  <rect x="490" y="212" width="710" height="292" rx="26" fill="#12182C" stroke="#2F385A"/>
+  <circle cx="536" cy="266" r="7" fill="#8B5CF6"/>
+  <circle cx="536" cy="338" r="7" fill="#22D3EE"/>
+  <circle cx="536" cy="410" r="7" fill="#F59E0B"/>
+  <text x="562" y="275" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="650">Renamed project and repository identity to Phantom</text>
+  <text x="562" y="347" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="650">Added stronger README, architecture media, and product visuals</text>
+  <text x="562" y="419" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="650">Removed local workspace artifacts and hardened repo hygiene</text>
+  <text x="72" y="584" fill="#64748B" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18">github.com/Mrwoady-hub/Phantom</text>
+</svg>
