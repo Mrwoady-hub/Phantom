@@ -7,6 +7,8 @@ Native macOS threat monitoring built in Swift.
 ![Swift](https://img.shields.io/badge/swift-5.9%2B-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+![Phantom dashboard](docs/assets/phantom-dashboard.png)
+
 Phantom is a menu bar security monitor for macOS that focuses on practical local visibility:
 
 - suspicious process execution
