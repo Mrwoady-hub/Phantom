@@ -139,9 +139,10 @@ Near-term priorities:
 
 The current transition release notes are here:
 
-- ![Phantom v1.1.0 release banner](docs/assets/release-banner-v1.1.0.svg)
-- [RELEASE_NOTES_v1.1.0.md](RELEASE_NOTES_v1.1.0.md)
+![Phantom v1.1.0 release banner](docs/assets/release-banner-v1.1.0.svg)
+
+- [v1.1.0 release notes](RELEASE_NOTES_v1.1.0.md)
 
 ## License
 
-MIT
+[MIT](LICENSE)
