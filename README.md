@@ -8,6 +8,7 @@ Native macOS threat monitoring built in Swift.
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ![Phantom dashboard](docs/assets/phantom-dashboard.png)
+![Key capabilities](docs/assets/key-capabilities.svg)
 
 Phantom is a menu bar security monitor for macOS that focuses on practical local visibility:
 
@@ -36,6 +37,10 @@ Most security tooling for macOS is either too heavy, too opaque, or too dependen
 | Process | `ps -axo pid,ppid,user,command` | masquerading, scripting abuse, credential dumping, process injection |
 | Network | `lsof -nP -iTCP -iUDP` | suspicious outbound connections, C2-style behavior, threat-intel matches |
 | Persistence | LaunchAgents, LaunchDaemons, Login Items, cron, KEXTs, app scripts | unsigned items, symlinks, user-writable launch points |
+
+## Scan Flow
+
+![Phantom scan flow demo](docs/assets/phantom-scan-demo.gif)
 
 ## Security Model
 
@@ -74,6 +79,8 @@ Core areas in the current codebase:
 - `AuditTrailStore.swift`, `SuppressionStore.swift`, `KeychainHMAC.swift`: integrity layer
 - `ThreatIntelFeed.swift`: local threat-intel feed management
 - `PhantomTests/`: unit coverage for audit, detection, risk, MITRE mapping, and intel behavior
+
+![Architecture at a glance](docs/assets/architecture-at-a-glance.svg)
 
 ## Requirements
 

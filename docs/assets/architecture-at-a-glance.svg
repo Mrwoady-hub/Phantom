@@ -1,0 +1,87 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D1020"/>
+      <stop offset="1" stop-color="#171B2E"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="760" rx="28" fill="url(#bg)"/>
+  <text x="48" y="62" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="30" font-weight="700">Architecture at a Glance</text>
+  <text x="48" y="92" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16">Native macOS monitoring pipeline from collection through operator-facing presentation.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="48" y="132" width="250" height="520" rx="24" fill="#11162A" stroke="#2D3759"/>
+    <text x="74" y="175" fill="#E2E8F0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700">Collectors</text>
+    <rect x="74" y="199" width="198" height="90" rx="16" fill="#161C33" stroke="#334064"/>
+    <text x="96" y="232" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">ProcessMonitor</text>
+    <text x="96" y="258" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">`ps` process inventory</text>
+    <rect x="74" y="307" width="198" height="90" rx="16" fill="#161C33" stroke="#334064"/>
+    <text x="96" y="340" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">NetworkMonitor</text>
+    <text x="96" y="366" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">`lsof` network visibility</text>
+    <rect x="74" y="415" width="198" height="90" rx="16" fill="#161C33" stroke="#334064"/>
+    <text x="96" y="448" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">PersistenceScanner</text>
+    <text x="96" y="474" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">LaunchAgents, cron, KEXTs</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="340" y="132" width="250" height="520" rx="24" fill="#11162A" stroke="#2D3759"/>
+    <text x="366" y="175" fill="#E2E8F0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700">Telemetry Core</text>
+    <rect x="366" y="199" width="198" height="110" rx="16" fill="#171B34" stroke="#37436B"/>
+    <text x="388" y="232" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">TelemetryBroker</text>
+    <text x="388" y="258" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Coordinates sensors, timeouts,</text>
+    <text x="388" y="277" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">and capture flow.</text>
+    <rect x="366" y="333" width="198" height="110" rx="16" fill="#171B34" stroke="#37436B"/>
+    <text x="388" y="366" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">TelemetrySnapshot</text>
+    <text x="388" y="392" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Produces incidents, launches,</text>
+    <text x="388" y="411" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">and operator-facing state.</text>
+    <rect x="366" y="467" width="198" height="110" rx="16" fill="#171B34" stroke="#37436B"/>
+    <text x="388" y="500" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">ThreatIntelFeed</text>
+    <text x="388" y="526" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Local cache plus Feodo-backed</text>
+    <text x="388" y="545" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">network enrichment.</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="632" y="132" width="250" height="520" rx="24" fill="#11162A" stroke="#2D3759"/>
+    <text x="658" y="175" fill="#E2E8F0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700">Trust + Integrity</text>
+    <rect x="658" y="199" width="198" height="110" rx="16" fill="#181B33" stroke="#37436B"/>
+    <text x="680" y="232" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">TrustDecision</text>
+    <text x="680" y="258" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Signing evaluation and</text>
+    <text x="680" y="277" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">application trust classification.</text>
+    <rect x="658" y="333" width="198" height="110" rx="16" fill="#181B33" stroke="#37436B"/>
+    <text x="680" y="366" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">AuditTrailStore</text>
+    <text x="680" y="392" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Hash-chained operator audit</text>
+    <text x="680" y="411" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">log with tamper evidence.</text>
+    <rect x="658" y="467" width="198" height="110" rx="16" fill="#181B33" stroke="#37436B"/>
+    <text x="680" y="500" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">SuppressionStore</text>
+    <text x="680" y="526" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Integrity-tagged suppression</text>
+    <text x="680" y="545" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">rules with fail-safe reset.</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="924" y="132" width="228" height="520" rx="24" fill="#11162A" stroke="#2D3759"/>
+    <text x="950" y="175" fill="#E2E8F0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24" font-weight="700">Presentation</text>
+    <rect x="950" y="199" width="176" height="110" rx="16" fill="#1A1832" stroke="#4B3A7A"/>
+    <text x="972" y="232" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">AppModel</text>
+    <text x="972" y="258" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Main actor state, export,</text>
+    <text x="972" y="277" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">notifications, and actions.</text>
+    <rect x="950" y="333" width="176" height="110" rx="16" fill="#1A1832" stroke="#4B3A7A"/>
+    <text x="972" y="366" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">SwiftUI UI</text>
+    <text x="972" y="392" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Dashboard, menu bar,</text>
+    <text x="972" y="411" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">settings, and views.</text>
+    <rect x="950" y="467" width="176" height="110" rx="16" fill="#1A1832" stroke="#4B3A7A"/>
+    <text x="972" y="500" fill="#F8FAFC" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="18" font-weight="700">Operator Output</text>
+    <text x="972" y="526" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">Incidents, ATT&amp;CK context,</text>
+    <text x="972" y="545" fill="#94A3B8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="14">alerts, and exported reports.</text>
+  </g>
+
+  <path d="M298 380H340" stroke="url(#accent)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M590 380H632" stroke="url(#accent)" stroke-width="6" stroke-linecap="round"/>
+  <path d="M882 380H924" stroke="url(#accent)" stroke-width="6" stroke-linecap="round"/>
+</svg>
