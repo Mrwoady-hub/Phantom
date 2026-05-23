@@ -12,6 +12,7 @@ extension AuditAction {
         case .incidentResolved: return "Incident Resolved"
         case .incidentAcknowledged: return "Incident Acknowledged"
         case .incidentSuppressed: return "Incident Suppressed"
+        case .auditChainMigrated: return "Audit Chain Migrated"
         }
     }
 
@@ -27,6 +28,8 @@ extension AuditAction {
             return .orange
         case .incidentSuppressed, .incidentsCleared:
             return .red
+        case .auditChainMigrated:
+            return .blue
         }
     }
 }

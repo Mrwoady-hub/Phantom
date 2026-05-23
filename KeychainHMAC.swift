@@ -76,15 +76,19 @@ enum KeychainHMAC {
 
     private static func storeKey(_ key: SymmetricKey) {
         let keyData = key.withUnsafeBytes { Data($0) }
-        // kSecAttrAccessibleAfterFirstUnlock:
+        // kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly:
         //   - Key survives sleep/wake without requiring a fresh unlock.
         //   - Key is NOT accessible to processes without the unlock credential.
-        //   - Suitable for a background security monitor that runs after login.
+        //   - "ThisDeviceOnly" prevents the key from being included in encrypted
+        //     backups or iCloud Keychain sync, so the local audit HMAC secret
+        //     never leaves the machine it protects. A restored or synced copy
+        //     would be useless anyway (it would only validate that machine's
+        //     audit log), and exporting it widens the attack surface.
         let attrs: [CFString: Any] = [
             kSecClass:          kSecClassGenericPassword,
             kSecAttrService:    service,
             kSecAttrAccount:    account,
-            kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlock,
+            kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
             kSecValueData:      keyData
         ]
         // Purge any stale entry first (handles re-install / manual key rotation)

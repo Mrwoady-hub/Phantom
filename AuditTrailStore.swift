@@ -231,7 +231,19 @@ enum AuditTrailStore {
         // normalize() recomputes every hash from scratch, so the old SHA-256
         // hashes are replaced with valid HMAC hashes in a single pass.
         let existing = load().sorted { $0.sequenceNumber < $1.sequenceNumber }
-        if !existing.isEmpty { save(existing) }
+        let hadPriorEvents = !existing.isEmpty
+        if hadPriorEvents { save(existing) }
+        // Emit a marker event so the trail itself records when the chain was
+        // rotated from SHA-256 to HMAC-SHA256. The marker is sealed under the
+        // new HMAC key, anchoring the boundary between the old and new chains.
+        // Skipped on fresh installs (no prior events) to avoid noise.
+        if hadPriorEvents {
+            _ = append(
+                action:       .auditChainMigrated,
+                details:      "Audit chain resealed: SHA-256 → HMAC-SHA256 (Keychain-backed key).",
+                operatorName: "system"
+            )
+        }
         UserDefaults.standard.set(true, forKey: flagKey)
     }
 

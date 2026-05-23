@@ -16,6 +16,7 @@ enum AuditAction: String, Codable, Sendable {
     case incidentResolved
     case incidentAcknowledged
     case incidentSuppressed
+    case auditChainMigrated
 }
 
 // MARK: - AuditEvent
