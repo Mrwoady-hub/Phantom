@@ -2,8 +2,10 @@ import Foundation
 
 // MARK: - PrivilegedHelperDelegate
 //
-// Owns the XPC listener and the run loop. When the app connects,
-// it returns an HelperCommandHandler as the exported object.
+// Owns the XPC listener and the run loop. When the app connects, it returns
+// an HelperCommandHandler as the exported object — but only after the peer
+// passes HelperPeerValidator. Unauthorized peers are rejected before any
+// privileged operation is exposed.
 
 final class PrivilegedHelperDelegate: NSObject, NSXPCListenerDelegate {
 
@@ -26,7 +28,13 @@ final class PrivilegedHelperDelegate: NSObject, NSXPCListenerDelegate {
         _ listener: NSXPCListener,
         shouldAcceptNewConnection connection: NSXPCConnection
     ) -> Bool {
-        // Export the handler as the SGPrivilegedHelperProtocol implementor
+        // Runtime peer validation. SMAuthorizedClients gates install; this
+        // gates every live XPC connection. Fail closed.
+        guard HelperPeerValidator.isAuthorized(connection: connection) else {
+            connection.invalidate()
+            return false
+        }
+
         connection.exportedInterface = NSXPCInterface(with: SGPrivilegedHelperProtocol.self)
         connection.exportedObject    = HelperCommandHandler()
         connection.resume()
@@ -127,34 +135,46 @@ final class HelperCommandHandler: NSObject, SGPrivilegedHelperProtocol {
 
     // MARK: - 3.0 Network Intelligence
 
+    /// Per-handler queue used to schedule tcpdump termination without blocking
+    /// the XPC handler thread for the full capture window.
+    private static let captureQueue = DispatchQueue(
+        label: "com.woady.phantom.helper.capture", qos: .utility
+    )
+
     func capturePackets(
         interface: String,
         durationSeconds: Int,
         outputPath: String,
         reply: @escaping (String?) -> Void
     ) {
-        // Security: validate inputs before passing to tcpdump
-        let safeInterface = interface.filter { $0.isLetter || $0.isNumber || $0 == "." || $0 == "_" || $0 == "-" }
-        let safeDuration  = max(2, min(durationSeconds, 60))  // clamp 2–60 seconds
-        let safeOutput    = outputPath.hasPrefix("/private/tmp/") ? outputPath : "/private/tmp/phantom-capture.pcap"
+        let safeInterface = interface.filter {
+            $0.isLetter || $0.isNumber || $0 == "." || $0 == "_" || $0 == "-"
+        }
+        guard !safeInterface.isEmpty else { reply(nil); return }
+
+        let safeDuration = max(2, min(durationSeconds, 60))
+
+        // Caller's outputPath is treated as a filename suggestion only.
+        // The real path is owned by HelperCaptureOutput.
+        let suggested = (outputPath as NSString).lastPathComponent
+        guard let safeOutput = HelperCaptureOutput.prepare(suggestedName: suggested) else {
+            reply(nil); return
+        }
 
         guard FileManager.default.isExecutableFile(atPath: "/usr/sbin/tcpdump") else {
             reply(nil); return
         }
 
-        // NOTE: Do NOT use -G/-W. The -G flag rotates at epoch multiples of N
-        // (e.g. -G 5 fires at :00, :05, :10 — not 5s after launch), so the
-        // effective capture window is 0–N seconds, often yielding an empty pcap.
-        //
-        // Instead: launch tcpdump without -G, sleep for the desired duration,
-        // then terminate the process. SIGTERM causes tcpdump to flush and finalize
-        // the pcap file cleanly before exiting.
+        // tcpdump rotates incorrectly with -G (fires at epoch boundaries, not
+        // N seconds after launch), so we run it open-ended and SIGTERM it
+        // after `safeDuration` seconds. SIGTERM causes tcpdump to flush and
+        // finalise the pcap cleanly.
         //
         // -i: interface  -w: pcap output  -n: no DNS resolution
-        // -s 0: unlimited snaplen (full packet)  -c 2000: safety packet cap
+        // -s 0: unlimited snaplen          -c 2000: safety packet cap
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/usr/sbin/tcpdump")
-        task.arguments     = [
+        task.arguments = [
             "-i", safeInterface,
             "-w", safeOutput,
             "-n",
@@ -164,25 +184,42 @@ final class HelperCommandHandler: NSObject, SGPrivilegedHelperProtocol {
         task.standardOutput = Pipe()
         task.standardError  = Pipe()
 
-        guard (try? task.run()) != nil else { reply(nil); return }
+        // terminationHandler fires off-main-runloop when tcpdump exits for
+        // any reason (timer SIGTERM, -c packet cap, or its own error).
+        // We reply exactly once.
+        var replied = false
+        let replyOnce: (String?) -> Void = { path in
+            guard !replied else { return }
+            replied = true
+            reply(path)
+        }
 
-        // Block for the capture window then send SIGTERM — tcpdump flushes the pcap cleanly.
-        Thread.sleep(forTimeInterval: TimeInterval(safeDuration))
-        task.terminate()
-        task.waitUntilExit()
+        task.terminationHandler = { proc in
+            Self.captureQueue.async {
+                if FileManager.default.fileExists(atPath: safeOutput) {
+                    HelperCaptureOutput.finalize(path: safeOutput)
+                    replyOnce(safeOutput)
+                } else {
+                    replyOnce(nil)
+                }
+                _ = proc   // silence unused warning under strict concurrency
+            }
+        }
 
-        guard FileManager.default.fileExists(atPath: safeOutput) else { reply(nil); return }
+        do {
+            try task.run()
+        } catch {
+            try? FileManager.default.removeItem(atPath: safeOutput)
+            replyOnce(nil)
+            return
+        }
 
-        // tcpdump runs as root and creates the pcap owned by root.
-        // The main app process (normal user) runs ngrep/tshark/zeek against this file.
-        // Without explicit world-read permission the scanners get EACCES → 0 events.
-        // chmod 644: owner(root) rw, group r, world r — safe for /private/tmp.
-        try? FileManager.default.setAttributes(
-            [.posixPermissions: 0o644],
-            ofItemAtPath: safeOutput
-        )
-
-        reply(safeOutput)
+        // Schedule SIGTERM after the capture window. We do NOT block this
+        // thread — the helper's XPC handler returns immediately and the
+        // terminationHandler above drives the final reply.
+        Self.captureQueue.asyncAfter(deadline: .now() + .seconds(safeDuration)) {
+            if task.isRunning { task.terminate() }
+        }
     }
 
     func listNetworkInterfaces(reply: @escaping ([String]) -> Void) {
