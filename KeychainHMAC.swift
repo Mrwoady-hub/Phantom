@@ -27,14 +27,14 @@ import Security
 
 enum KeychainHMAC {
 
-    private static let service = "com.phantom.hmackey"
-    private static let account = "audit-hmac-v1"
+    nonisolated private static let service = "com.phantom.hmackey"
+    nonisolated private static let account = "audit-hmac-v1"
 
     // MARK: - Public Interface
 
     /// Computes HMAC-SHA256(key, payload) and returns a lowercase hex string.
     /// The key is loaded from (or lazily created in) the Keychain on first call.
-    static func hmac(for payload: String) -> String {
+    nonisolated static func hmac(for payload: String) -> String {
         let mac = HMAC<SHA256>.authenticationCode(
             for: Data(payload.utf8),
             using: resolvedKey()
@@ -48,7 +48,7 @@ enum KeychainHMAC {
     /// Thread-safe: multiple concurrent callers may generate a key in rare
     /// races on first launch, but SecItemAdd will simply return
     /// errSecDuplicateItem for the loser — the winner's stored key is reloaded.
-    static func resolvedKey() -> SymmetricKey {
+    nonisolated static func resolvedKey() -> SymmetricKey {
         if let key = loadKey() { return key }
         let key = SymmetricKey(size: .bits256)
         storeKey(key)
@@ -58,7 +58,7 @@ enum KeychainHMAC {
 
     // MARK: - Keychain I/O
 
-    private static func loadKey() -> SymmetricKey? {
+    nonisolated private static func loadKey() -> SymmetricKey? {
         let query: [CFString: Any] = [
             kSecClass:      kSecClassGenericPassword,
             kSecAttrService: service,
@@ -74,7 +74,7 @@ enum KeychainHMAC {
         return SymmetricKey(data: data)
     }
 
-    private static func storeKey(_ key: SymmetricKey) {
+    nonisolated private static func storeKey(_ key: SymmetricKey) {
         let keyData = key.withUnsafeBytes { Data($0) }
         // kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly:
         //   - Key survives sleep/wake without requiring a fresh unlock.

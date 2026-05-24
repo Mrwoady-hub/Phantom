@@ -167,20 +167,56 @@ enum TrustEvaluator {
         "\(NSHomeDirectory())/Documents/", "/tmp/", "/private/tmp/"
     ]
     private static let suspiciousTokens: Set<String> = [
-        "nc","ncat","socat","ngrok","frpc","chisel",
-        "python3","python","ruby","osascript","curl","wget",
-        "launchctl","screencapture","networksetup","pkill","killall"
+        // Network tunneling / C2 transport
+        "nc","ncat","socat","ngrok","frpc","frps","chisel","bore",
+        "ligolo","ligolo-ng","rpivot","revsocks","iodine","ptunnel",
+        "ssf","rathole","cloudflared",
+        // Scripting / interpreters (dual-use, high abuse rate)
+        "python3","python","ruby","osascript","curl","wget","node",
+        // macOS abuse vectors
+        "launchctl","screencapture","networksetup","pkill","killall",
+        // Credential access tools
+        "keychaindump","chainbreaker","lazagne","pypykatz",
+        // Offensive security frameworks (process names)
+        "msfconsole","msfvenom","sliver","havoc","mythic",
+        "poseidon","apollo-agent","deimos","covenant",
+        "meterpreter","empyre","pupy",
+        // Crypto miners
+        "xmrig","cpuminer","minerd","xmr-stak","ethminer","nbminer",
+        // macOS-specific backdoors / adware
+        "fruitfly","pirrit","bundlore","shlayer","adload",
+        "genieo","vsearch","crossrider","xcsset",
+        "calisto","windtail","coldroot","proton"
     ]
 
     // MARK: - Known App
 
     private static func isKnownApp(_ bundle: String?, _ team: String?, _ path: String) -> Bool {
+        // First: reject explicitly malicious bundle ID prefixes regardless of signing
+        if let b = bundle, MalwareSignatures.isMaliciousBundle(b) { return false }
+
         let knownBundles = ["com.google.","com.microsoft.","com.adobe.","us.zoom.",
                             "org.mozilla.","com.openai.","com.apple.","com.jetbrains.",
-                            "com.spotify.","com.dropbox.","com.github.","com.woady."]
-        let knownTeams: Set<String> = ["EQHXZ8M8AV","UBF8T346G9","BJ4HAAB9B3",
-                                        "2FNC3A47ZF","QKQK8Q2W8V","W6KPYK32ZA",
-                                        "QT8Z3BNUY7","G7HH3F8CAK"]
+                            "com.spotify.","com.dropbox.","com.github.","com.woady.",
+                            "com.apple.","com.devmate.","com.1password.","com.dashlane.",
+                            "com.nordvpn.","com.expressvpn.","com.tunnelbear.",
+                            "com.docker.","com.vagrant.","org.virtualbox.",
+                            "io.tailscale.","com.wireguard."]
+        let knownTeams: Set<String> = [
+            "EQHXZ8M8AV",  // Google
+            "UBF8T346G9",  // Microsoft
+            "BJ4HAAB9B3",  // Adobe
+            "2FNC3A47ZF",  // Zoom
+            "QKQK8Q2W8V",  // Mozilla
+            "W6KPYK32ZA",  // Slack
+            "QT8Z3BNUY7",  // 1Password
+            "G7HH3F8CAK",  // Dropbox
+            "HHKB6SEN94",  // Docker
+            "7N3TXXT5LT",  // NordVPN
+            "S8EVQ3J358",  // ExpressVPN
+            "3LS4LVZ3R2",  // Tailscale
+            "WG8T3943ZO",  // WireGuard
+        ]
         if let b = bundle, knownBundles.contains(where: { b.hasPrefix($0) }) { return true }
         if let t = team,   knownTeams.contains(t)                             { return true }
         return path.hasPrefix("/Applications/")

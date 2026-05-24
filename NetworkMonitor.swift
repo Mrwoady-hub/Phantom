@@ -8,8 +8,8 @@ struct NetworkConnectionRecord: Identifiable, Hashable, Sendable {
     let state: String?
 
     var id: String { "\(command)|\(processID ?? -1)|\(protocolName)|\(name)|\(state ?? "")" }
-    var isListening: Bool { state == "LISTEN" }
-    var isExternal: Bool {
+    nonisolated var isListening: Bool { state == "LISTEN" }
+    nonisolated var isExternal: Bool {
         let lower = name.lowercased()
         return !lower.contains("127.0.0.1")
             && !lower.contains("localhost")
@@ -19,6 +19,12 @@ struct NetworkConnectionRecord: Identifiable, Hashable, Sendable {
 }
 
 final class NetworkMonitor {
+
+    // nonisolated: NetworkMonitor has no UI dependencies. All internal state is
+    // protected by NSLock (NetworkCache). This explicit annotation overrides the
+    // project's -default-isolation MainActor so ScanWorker / LsofScanner can
+    // create and call this from any context.
+    nonisolated init() {}
 
     // MARK: - Cache
     //
@@ -32,9 +38,9 @@ final class NetworkMonitor {
     // connection will be caught within 90s of opening — acceptable for a non-EDR tool.
     //
     // Cache is actor-isolated to avoid data races across concurrent scan invocations.
-    private static let cache = NetworkCache()
+    nonisolated private static let cache = NetworkCache()
 
-    func activeConnections() -> [String] {
+    nonisolated func activeConnections() -> [String] {
         activeConnectionRecords().map {
             [$0.command, $0.processID.map(String.init) ?? "-",
              $0.protocolName, $0.name, $0.state ?? ""]
@@ -43,7 +49,7 @@ final class NetworkMonitor {
         }
     }
 
-    func activeConnectionRecords() -> [NetworkConnectionRecord] {
+    nonisolated func activeConnectionRecords() -> [NetworkConnectionRecord] {
         // Synchronous cache check — returns stale results if fresh enough
         if let cached = NetworkMonitor.cache.getSync() { return cached }
 
@@ -54,7 +60,7 @@ final class NetworkMonitor {
 
     // MARK: - lsof execution
 
-    private func runLsof() -> [NetworkConnectionRecord] {
+    nonisolated private func runLsof() -> [NetworkConnectionRecord] {
         // SECURITY: resolve lsof path — don't assume /usr/sbin/lsof
         let lsofURL = resolvedLsof()
         guard let url = lsofURL else { return [] }
@@ -76,7 +82,7 @@ final class NetworkMonitor {
         return output.components(separatedBy: "\n").compactMap(parseRecord)
     }
 
-    private func resolvedLsof() -> URL? {
+    nonisolated private func resolvedLsof() -> URL? {
         let known = URL(fileURLWithPath: "/usr/sbin/lsof")
         if FileManager.default.isExecutableFile(atPath: known.path) { return known }
         for dir in (ProcessInfo.processInfo.environment["PATH"] ?? "").components(separatedBy: ":") {
@@ -86,7 +92,7 @@ final class NetworkMonitor {
         return nil
     }
 
-    private func parseRecord(_ line: String) -> NetworkConnectionRecord? {
+    nonisolated private func parseRecord(_ line: String) -> NetworkConnectionRecord? {
         let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !trimmed.hasPrefix("COMMAND ") else { return nil }
 
@@ -118,18 +124,21 @@ final class NetworkMonitor {
 /// Thread-safe 90-second result cache. Using a class (not actor) so callers
 /// can use it synchronously from non-async contexts.
 private final class NetworkCache: @unchecked Sendable {
-    private var records: [NetworkConnectionRecord] = []
-    private var lastFetch: Date = .distantPast
+    // nonisolated(unsafe): all access is serialised through `lock` (NSLock).
+    // The @unchecked Sendable annotation already documents this contract;
+    // the nonisolated(unsafe) suppresses the -default-isolation MainActor warning.
+    nonisolated(unsafe) private var records: [NetworkConnectionRecord] = []
+    nonisolated(unsafe) private var lastFetch: Date = .distantPast
     private let lock  = NSLock()
     private let ttl: TimeInterval = 90
 
-    func getSync() -> [NetworkConnectionRecord]? {
+    nonisolated func getSync() -> [NetworkConnectionRecord]? {
         lock.lock(); defer { lock.unlock() }
         guard Date().timeIntervalSince(lastFetch) < ttl else { return nil }
         return records
     }
 
-    func setSync(_ newRecords: [NetworkConnectionRecord]) {
+    nonisolated func setSync(_ newRecords: [NetworkConnectionRecord]) {
         lock.lock(); defer { lock.unlock() }
         records   = newRecords
         lastFetch = Date()

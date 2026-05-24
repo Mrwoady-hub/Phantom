@@ -17,6 +17,11 @@ enum AuditAction: String, Codable, Sendable {
     case incidentAcknowledged
     case incidentSuppressed
     case auditChainMigrated
+
+    // Live persistence watch events (PersistenceWatchService)
+    case persistenceAdded
+    case persistenceRemoved
+    case persistenceModified
 }
 
 // MARK: - AuditEvent
@@ -34,7 +39,7 @@ struct AuditEvent: Identifiable, Codable, Sendable {
     let previousHash: String?
     let eventHash: String?
 
-    init(
+    nonisolated init(
         id: UUID = UUID(),
         timestamp: Date,
         sequenceNumber: Int = 0,

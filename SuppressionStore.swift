@@ -1,5 +1,38 @@
 import Foundation
 
+// MARK: - SuppressionStore persistence format
+//
+// Defined at file scope (not nested inside the enum) so its Codable conformance
+// is nonisolated by default. Nested types inherit the enclosing type's actor
+// isolation; file-private types do not.
+
+private struct SuppressionPayload: Sendable {
+    let keys: [String]
+    let integrityTag: String
+
+    // Explicit nonisolated Codable conformance prevents the project's
+    // -default-isolation MainActor from making the synthesised init(from:)
+    // and encode(to:) @MainActor, which would block nonisolated callers.
+    nonisolated init(keys: [String], integrityTag: String) {
+        self.keys = keys
+        self.integrityTag = integrityTag
+    }
+}
+
+extension SuppressionPayload: Codable {
+    nonisolated init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        keys         = try c.decode([String].self, forKey: .keys)
+        integrityTag = try c.decode(String.self,   forKey: .integrityTag)
+    }
+    nonisolated func encode(to encoder: any Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(keys,         forKey: .keys)
+        try c.encode(integrityTag, forKey: .integrityTag)
+    }
+    private enum CodingKeys: String, CodingKey { case keys, integrityTag }
+}
+
 // MARK: - SuppressionStore
 //
 // SECURITY UPGRADE from UserDefaults:
@@ -23,10 +56,10 @@ import Foundation
 
 enum SuppressionStore {
 
-    private static let directoryName = "Phantom"
-    private static let fileName      = "Phantom-Suppressions.json"
+    nonisolated private static let directoryName = "Phantom"
+    nonisolated private static let fileName      = "Phantom-Suppressions.json"
 
-    private static var fileURL: URL {
+    nonisolated private static var fileURL: URL {
         let base = FileManager.default.urls(
             for: .applicationSupportDirectory,
             in: .userDomainMask
@@ -40,18 +73,11 @@ enum SuppressionStore {
         return dir.appendingPathComponent(fileName)
     }
 
-    // MARK: - Persistence format
-
-    private struct StoredPayload: Codable {
-        let keys: [String]      // sorted for deterministic hashing
-        let integrityTag: String // SHA-256(keys.joined(separator: "|"))
-    }
-
     // MARK: - Public interface
 
-    static func load() -> Set<String> {
+    nonisolated static func load() -> Set<String> {
         guard let data = try? Data(contentsOf: fileURL),
-              let payload = try? JSONDecoder().decode(StoredPayload.self, from: data)
+              let payload = try? JSONDecoder().decode(SuppressionPayload.self, from: data)
         else { return [] }
 
         // SECURITY: verify integrity tag before trusting the payload
@@ -66,9 +92,9 @@ enum SuppressionStore {
         return Set(payload.keys)
     }
 
-    static func save(_ keys: Set<String>) {
+    nonisolated static func save(_ keys: Set<String>) {
         let sorted  = keys.sorted()
-        let payload = StoredPayload(keys: sorted, integrityTag: tag(for: sorted))
+        let payload = SuppressionPayload(keys: sorted, integrityTag: tag(for: sorted))
         guard let data = try? JSONEncoder().encode(payload) else { return }
         try? data.write(to: fileURL, options: .atomic)
         // SECURITY: owner read/write only
@@ -80,7 +106,7 @@ enum SuppressionStore {
 
     // MARK: - Integrity
 
-    private static func tag(for keys: [String]) -> String {
+    nonisolated private static func tag(for keys: [String]) -> String {
         // HMAC-SHA256 with Keychain-backed key — see KeychainHMAC.swift.
         return KeychainHMAC.hmac(for: keys.joined(separator: "|"))
     }

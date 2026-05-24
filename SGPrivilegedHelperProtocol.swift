@@ -12,34 +12,40 @@ import Foundation
 //   • The helper runs as root; all methods are scoped to read-only observation.
 //     No write operations are exposed to limit blast radius if compromised.
 
+// NOTE: All requirements are `nonisolated`.
+//
+// `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` would otherwise mark every method
+// @MainActor, preventing callers on background tasks (e.g. withThrowingTaskGroup)
+// from invoking them without an actor hop. XPC calls cross a Mach port — they are
+// inherently thread-agnostic and must never carry Swift actor isolation.
 @objc protocol SGPrivilegedHelperProtocol {
 
     /// Returns the helper's version string. Used to verify the correct helper
     /// version is installed before performing privileged operations.
-    func getVersion(reply: @escaping (String) -> Void)
+    nonisolated func getVersion(reply: @escaping (String) -> Void)
 
     /// Runs `lsof -nP -iTCP -iUDP` as root, returning raw output.
     /// Root-level lsof sees ALL processes, including those owned by other users
     /// and system daemons that user-level lsof cannot enumerate.
-    func runPrivilegedLsof(reply: @escaping (String?) -> Void)
+    nonisolated func runPrivilegedLsof(reply: @escaping (String?) -> Void)
 
     /// Reads `/etc/hosts` and returns lines that look malicious:
     /// - Entries redirecting known domains (Apple, Google, Microsoft) to non-standard IPs
     /// - Entries pointing to RFC-1918 addresses for public hostnames
-    func checkEtcHosts(reply: @escaping ([String]) -> Void)
+    nonisolated func checkEtcHosts(reply: @escaping ([String]) -> Void)
 
     /// Returns `kextstat` output (kernel extension list) filtered to third-party KEXTs.
     /// Useful for detecting rootkit kernel modules that load before userspace.
-    func listKernelExtensions(reply: @escaping (String?) -> Void)
+    nonisolated func listKernelExtensions(reply: @escaping (String?) -> Void)
 
     /// Checks `/etc/sudoers` and `/etc/sudoers.d/` for unexpected entries that
     /// grant NOPASSWD sudo access to non-admin users.
-    func checkSudoers(reply: @escaping ([String]) -> Void)
+    nonisolated func checkSudoers(reply: @escaping ([String]) -> Void)
 
     /// Returns the contents of `/Library/LaunchAgents/` and `/Library/LaunchDaemons/`
     /// that are NOT in the PersistenceScanner's trusted Apple set. Root access
     /// ensures no permission errors on protected plists.
-    func listSystemPersistence(reply: @escaping ([String]) -> Void)
+    nonisolated func listSystemPersistence(reply: @escaping ([String]) -> Void)
 
     // MARK: - 3.0 Network Intelligence
 
@@ -47,7 +53,7 @@ import Foundation
     /// Writes the result as a pcap file to `outputPath` (must be writable by root).
     /// Returns the output path on success, nil on failure.
     /// Root is required for live packet capture on macOS.
-    func capturePackets(
+    nonisolated func capturePackets(
         interface: String,
         durationSeconds: Int,
         outputPath: String,
@@ -56,7 +62,7 @@ import Foundation
 
     /// Lists available network interfaces (equivalent to `tcpdump -D`).
     /// Returns an array of interface names suitable for capture.
-    func listNetworkInterfaces(reply: @escaping ([String]) -> Void)
+    nonisolated func listNetworkInterfaces(reply: @escaping ([String]) -> Void)
 
 }
 

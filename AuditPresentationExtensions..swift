@@ -3,16 +3,19 @@ import SwiftUI
 extension AuditAction {
     var title: String {
         switch self {
-        case .monitoringStarted: return "Monitoring Started"
-        case .monitoringStopped: return "Monitoring Stopped"
-        case .settingsUpdated: return "Settings Updated"
-        case .incidentsExported: return "Incidents Exported"
-        case .incidentsCleared: return "Incidents Cleared"
-        case .incidentDetected: return "Incident Detected"
-        case .incidentResolved: return "Incident Resolved"
+        case .monitoringStarted:   return "Monitoring Started"
+        case .monitoringStopped:   return "Monitoring Stopped"
+        case .settingsUpdated:     return "Settings Updated"
+        case .incidentsExported:   return "Incidents Exported"
+        case .incidentsCleared:    return "Incidents Cleared"
+        case .incidentDetected:    return "Incident Detected"
+        case .incidentResolved:    return "Incident Resolved"
         case .incidentAcknowledged: return "Incident Acknowledged"
-        case .incidentSuppressed: return "Incident Suppressed"
-        case .auditChainMigrated: return "Audit Chain Migrated"
+        case .incidentSuppressed:  return "Incident Suppressed"
+        case .auditChainMigrated:  return "Audit Chain Migrated"
+        case .persistenceAdded:    return "Persistence Item Added"
+        case .persistenceRemoved:  return "Persistence Item Removed"
+        case .persistenceModified: return "Persistence Item Modified"
         }
     }
 
@@ -30,6 +33,10 @@ extension AuditAction {
             return .red
         case .auditChainMigrated:
             return .blue
+        case .persistenceAdded, .persistenceModified:
+            return Color(red: 1.0, green: 0.3, blue: 0.2)   // vivid red-orange — high alert
+        case .persistenceRemoved:
+            return .orange
         }
     }
 }

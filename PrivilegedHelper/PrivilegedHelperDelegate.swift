@@ -51,19 +51,19 @@ final class HelperCommandHandler: NSObject, SGPrivilegedHelperProtocol {
 
     // MARK: - Version
 
-    func getVersion(reply: @escaping (String) -> Void) {
+    nonisolated func getVersion(reply: @escaping (String) -> Void) {
         reply("3.0")
     }
 
     // MARK: - Privileged lsof
 
-    func runPrivilegedLsof(reply: @escaping (String?) -> Void) {
+    nonisolated func runPrivilegedLsof(reply: @escaping (String?) -> Void) {
         reply(shell("/usr/sbin/lsof", args: ["-nP", "-iTCP", "-iUDP"]))
     }
 
     // MARK: - /etc/hosts audit
 
-    func checkEtcHosts(reply: @escaping ([String]) -> Void) {
+    nonisolated func checkEtcHosts(reply: @escaping ([String]) -> Void) {
         guard let contents = try? String(contentsOfFile: "/etc/hosts", encoding: .utf8)
         else { reply([]); return }
 
@@ -89,13 +89,13 @@ final class HelperCommandHandler: NSObject, SGPrivilegedHelperProtocol {
 
     // MARK: - Kernel Extensions
 
-    func listKernelExtensions(reply: @escaping (String?) -> Void) {
+    nonisolated func listKernelExtensions(reply: @escaping (String?) -> Void) {
         reply(shell("/usr/sbin/kextstat", args: ["-l", "-b", "com.apple"]))
     }
 
     // MARK: - Sudoers audit
 
-    func checkSudoers(reply: @escaping ([String]) -> Void) {
+    nonisolated func checkSudoers(reply: @escaping ([String]) -> Void) {
         var flaggedLines: [String] = []
 
         let paths = ["/etc/sudoers"] +
@@ -121,7 +121,7 @@ final class HelperCommandHandler: NSObject, SGPrivilegedHelperProtocol {
 
     // MARK: - System Persistence
 
-    func listSystemPersistence(reply: @escaping ([String]) -> Void) {
+    nonisolated func listSystemPersistence(reply: @escaping ([String]) -> Void) {
         let dirs = ["/Library/LaunchAgents", "/Library/LaunchDaemons"]
         var results: [String] = []
         for dir in dirs {
@@ -141,7 +141,7 @@ final class HelperCommandHandler: NSObject, SGPrivilegedHelperProtocol {
         label: "com.woady.phantom.helper.capture", qos: .utility
     )
 
-    func capturePackets(
+    nonisolated func capturePackets(
         interface: String,
         durationSeconds: Int,
         outputPath: String,
@@ -222,7 +222,7 @@ final class HelperCommandHandler: NSObject, SGPrivilegedHelperProtocol {
         }
     }
 
-    func listNetworkInterfaces(reply: @escaping ([String]) -> Void) {
+    nonisolated func listNetworkInterfaces(reply: @escaping ([String]) -> Void) {
         // `tcpdump -D` lists interfaces; parse "N.ifname (description)"
         guard let output = shell("/usr/sbin/tcpdump", args: ["-D"]) else {
             reply([]); return
@@ -242,7 +242,7 @@ final class HelperCommandHandler: NSObject, SGPrivilegedHelperProtocol {
 
     // MARK: - Shell Helper
 
-    private func shell(_ path: String, args: [String]) -> String? {
+    nonisolated private func shell(_ path: String, args: [String]) -> String? {
         let task = Process()
         task.executableURL  = URL(fileURLWithPath: path)
         task.arguments      = args

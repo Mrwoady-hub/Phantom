@@ -72,66 +72,119 @@ final class PrivilegedHelperClient: ObservableObject {
     // MARK: - Async Wrappers
 
     func helperVersion() async throws -> String {
-        try await withCheckedThrowingContinuation { cont in
-            do {
-                try proxy().getVersion { version in cont.resume(returning: version) }
-            } catch {
-                cont.resume(throwing: error)
+        // Race the XPC call against a 3-second timeout.
+        //
+        // Without this, a missing/unresponsive helper hangs the continuation forever:
+        // NSXPCConnection's error handler fires (clearing `connection`) but the reply
+        // block never fires, so the continuation never resumes.
+        //
+        // Using a task group lets Swift structured concurrency cancel the losing task.
+        let proxyRef = try proxy()          // capture on @MainActor before the group
+        return try await withThrowingTaskGroup(of: String.self) { group in
+            group.addTask {
+                // XPC reply blocks call back on an arbitrary thread, but the
+                // continuation itself is Sendable so this is safe.
+                try await withCheckedThrowingContinuation { cont in
+                    proxyRef.getVersion { version in cont.resume(returning: version) }
+                }
             }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 3_000_000_000)   // 3 s
+                throw HelperError.timeout
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
         }
     }
 
     func runPrivilegedLsof() async throws -> String {
-        try await withCheckedThrowingContinuation { cont in
-            do {
-                try proxy().runPrivilegedLsof { output in
-                    cont.resume(returning: output ?? "")
+        let p = try proxy()
+        return try await withThrowingTaskGroup(of: String.self) { group in
+            group.addTask {
+                try await withCheckedThrowingContinuation { cont in
+                    p.runPrivilegedLsof { output in cont.resume(returning: output ?? "") }
                 }
-            } catch {
-                cont.resume(throwing: error)
             }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 5_000_000_000)   // 5 s
+                throw HelperError.timeout
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
         }
     }
 
     func checkEtcHosts() async throws -> [String] {
-        try await withCheckedThrowingContinuation { cont in
-            do {
-                try proxy().checkEtcHosts { lines in cont.resume(returning: lines) }
-            } catch {
-                cont.resume(throwing: error)
+        let p = try proxy()
+        return try await withThrowingTaskGroup(of: [String].self) { group in
+            group.addTask {
+                try await withCheckedThrowingContinuation { cont in
+                    p.checkEtcHosts { lines in cont.resume(returning: lines) }
+                }
             }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 3_000_000_000)   // 3 s
+                throw HelperError.timeout
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
         }
     }
 
     func listKernelExtensions() async throws -> String {
-        try await withCheckedThrowingContinuation { cont in
-            do {
-                try proxy().listKernelExtensions { output in
-                    cont.resume(returning: output ?? "")
+        let p = try proxy()
+        return try await withThrowingTaskGroup(of: String.self) { group in
+            group.addTask {
+                try await withCheckedThrowingContinuation { cont in
+                    p.listKernelExtensions { output in cont.resume(returning: output ?? "") }
                 }
-            } catch {
-                cont.resume(throwing: error)
             }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 5_000_000_000)   // 5 s
+                throw HelperError.timeout
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
         }
     }
 
     func checkSudoers() async throws -> [String] {
-        try await withCheckedThrowingContinuation { cont in
-            do {
-                try proxy().checkSudoers { lines in cont.resume(returning: lines) }
-            } catch {
-                cont.resume(throwing: error)
+        let p = try proxy()
+        return try await withThrowingTaskGroup(of: [String].self) { group in
+            group.addTask {
+                try await withCheckedThrowingContinuation { cont in
+                    p.checkSudoers { lines in cont.resume(returning: lines) }
+                }
             }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 3_000_000_000)   // 3 s
+                throw HelperError.timeout
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
         }
     }
 
     func listSystemPersistence() async throws -> [String] {
-        try await withCheckedThrowingContinuation { cont in
-            do {
-                try proxy().listSystemPersistence { paths in cont.resume(returning: paths) }
-            } catch {
-                cont.resume(throwing: error)
+        let p = try proxy()
+        return try await withThrowingTaskGroup(of: [String].self) { group in
+            group.addTask {
+                try await withCheckedThrowingContinuation { cont in
+                    p.listSystemPersistence { paths in cont.resume(returning: paths) }
+                }
             }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 5_000_000_000)   // 5 s
+                throw HelperError.timeout
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
         }
     }
 
@@ -144,29 +197,45 @@ final class PrivilegedHelperClient: ObservableObject {
         durationSeconds: Int = 10,
         outputPath: String = "/private/tmp/phantom-capture.pcap"
     ) async throws -> String? {
-        try await withCheckedThrowingContinuation { cont in
-            do {
-                try proxy().capturePackets(
-                    interface: interface,
-                    durationSeconds: durationSeconds,
-                    outputPath: outputPath
-                ) { path in
-                    cont.resume(returning: path)
+        let p = try proxy()
+        // Timeout = capture duration + 5 s headroom for startup/teardown.
+        let timeoutNs = UInt64((Double(durationSeconds) + 5.0) * 1_000_000_000)
+        return try await withThrowingTaskGroup(of: String?.self) { group in
+            group.addTask {
+                try await withCheckedThrowingContinuation { cont in
+                    p.capturePackets(
+                        interface: interface,
+                        durationSeconds: durationSeconds,
+                        outputPath: outputPath
+                    ) { path in cont.resume(returning: path) }
                 }
-            } catch {
-                cont.resume(throwing: error)
             }
+            group.addTask {
+                try await Task.sleep(nanoseconds: timeoutNs)
+                throw HelperError.timeout
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
         }
     }
 
     /// List available network interfaces for capture.
     func listNetworkInterfaces() async throws -> [String] {
-        try await withCheckedThrowingContinuation { cont in
-            do {
-                try proxy().listNetworkInterfaces { interfaces in cont.resume(returning: interfaces) }
-            } catch {
-                cont.resume(throwing: error)
+        let p = try proxy()
+        return try await withThrowingTaskGroup(of: [String].self) { group in
+            group.addTask {
+                try await withCheckedThrowingContinuation { cont in
+                    p.listNetworkInterfaces { interfaces in cont.resume(returning: interfaces) }
+                }
             }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 3_000_000_000)   // 3 s
+                throw HelperError.timeout
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
         }
     }
 
@@ -174,6 +243,13 @@ final class PrivilegedHelperClient: ObservableObject {
 
     enum HelperError: LocalizedError {
         case connectionFailed
-        var errorDescription: String? { "Could not connect to the privileged helper." }
+        case timeout
+        var errorDescription: String? {
+            switch self {
+            case .connectionFailed: return "Could not connect to the privileged helper."
+            case .timeout:          return "Helper did not respond within the timeout window."
+            }
+        }
     }
+
 }

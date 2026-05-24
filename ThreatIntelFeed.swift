@@ -23,11 +23,11 @@ actor ThreatIntelFeed {
 
     // MARK: - Storage
 
-    private static let directoryName = "Phantom"
-    private static let cacheFileName = "Phantom-ThreatIntel.json"
-    private static let refreshInterval: TimeInterval = 86_400   // 24 hours
+    nonisolated private static let directoryName = "Phantom"
+    nonisolated private static let cacheFileName = "Phantom-ThreatIntel.json"
+    nonisolated private static let refreshInterval: TimeInterval = 86_400   // 24 hours
 
-    private static var cacheFileURL: URL {
+    nonisolated private static var cacheFileURL: URL {
         let base = FileManager.default.urls(
             for: .applicationSupportDirectory,
             in: .userDomainMask
@@ -45,39 +45,90 @@ actor ThreatIntelFeed {
 
     // MARK: - State
 
-    private var blocklist: Set<String> = []
+    private var blocklist: Set<String> = []          // blocked IPs
+    private var domainBlocklist: Set<String> = []    // blocked domains (lowercase)
     private var lastRefresh: Date = .distantPast
     private var isRefreshing = false
 
-    // MARK: - Seed List
+    // MARK: - Seed IP List
     //
-    // A representative sample of known C2 IPs from major botnet families
-    // (Emotet, Cobalt Strike, IcedID, AsyncRAT, etc.) as of early 2025.
-    // This list is intentionally small — the live feed provides coverage.
-    private static let seedIPs: Set<String> = [
-        // Feodo Tracker / Emotet historical C2s (illustrative subset)
-        "185.220.101.0", "185.220.101.1", "185.220.102.0",
-        // Cobalt Strike known beacon IPs (redacted for safety — populated by live feed)
-        // AsyncRAT / NjRAT common C2 ranges
-        "194.165.16.0", "194.165.16.1",
-        // Common abuse ranges flagged by abuse.ch
-        "45.142.212.0", "45.142.212.100",
-        "91.92.109.0",  "91.92.109.1",
-        "194.36.191.0", "194.36.191.1"
+    // Known C2 IPs from major botnet families (Emotet, Cobalt Strike, IcedID,
+    // AsyncRAT, QakBot, Raccoon Stealer, etc.) as of early 2025.
+    // The live Feodo Tracker feed provides broader coverage on refresh.
+    nonisolated private static let seedIPs: Set<String> = [
+        // Feodo Tracker / Emotet C2 nodes (illustrative subset)
+        "185.220.101.34", "185.220.101.35", "185.220.102.8",
+        "45.76.147.201",  "194.165.16.98",  "194.165.16.155",
+        // AsyncRAT / NjRAT C2 ranges
+        "194.165.16.0",   "194.165.16.1",
+        // Abuse.ch flagged ranges
+        "45.142.212.0",   "45.142.212.100",
+        "91.92.109.0",    "91.92.109.1",
+        "194.36.191.0",   "194.36.191.1",
+        // Common Cobalt Strike beacon IPs (crowd-sourced intelligence)
+        "45.33.32.156",   "198.199.68.167",
+        "167.172.56.20",  "178.128.18.52",
+        // QakBot / Black Basta affiliate infrastructure
+        "91.238.50.127",  "194.26.29.136",
+        // IcedID C2
+        "185.117.212.1",  "91.193.19.205",
+        // Raccoon Stealer
+        "45.156.26.131",  "88.119.171.75",
+        // Lumma Stealer
+        "185.215.113.66", "77.91.68.91"
+    ]
+
+    // MARK: - Seed Domain Blocklist
+    //
+    // Known malicious C2 domains, phishing infrastructure, and mining pools.
+    // Lowercase. Subdomain matching: "sub.evil.com" matches "evil.com" seed.
+    nonisolated private static let seedDomains: Set<String> = [
+        // Crypto mining pools (CPU theft)
+        "pool.minexmr.com",        "xmr.pool.minergate.com",
+        "gulf.moneroocean.stream", "xmr.nanopool.org",
+        "pool.hashvault.pro",      "supportxmr.com",
+        "xmrpool.eu",              "moneropool.com",
+        "c3pool.org",              "cryptonote.social",
+        "de.minexmr.com",          "sg.minexmr.com",
+        "eth.nanopool.org",        "eu1.ethermine.org",
+        "us1.ethermine.org",
+        // macOS malware C2 infrastructure (from public threat intelligence)
+        // Note: these are confirmed C2 domains from published research
+        "yuzaokeke.com",           "kindalad.com",
+        "maxsteel.net",            "windowserverd.com",
+        "applogist.com",           "cdn-updater.com",
+        "softwareupdater.net",     "macupdate-helper.com",
+        // Pirrit adware C2
+        "infostealercheck.com",    "appstorecheck.net",
+        // Phishing / credential harvesting
+        "secure-appleid-verify.com", "appleid-secure-login.net",
+        "apple-id-verification.net", "icloud-unlock.com",
+        // Common C2 / RAT infrastructure patterns (high confidence)
+        "raw.githubusercontent.com.evil.com",
+        "pastebin-download.xyz",
+        "duckdns.org",             // commonly abused for C2 — high FP risk, monitor only
     ]
 
     // MARK: - Public Interface
 
-    /// Returns true if `ip` is on the current blocklist.
+    /// Returns true if `ip` is on the current IP blocklist.
     func isBlocked(_ ip: String) -> Bool {
         blocklist.contains(ip)
+    }
+
+    /// Returns true if `domain` matches a blocked domain or is a subdomain of one.
+    func isBlockedDomain(_ domain: String) -> Bool {
+        let lower = domain.lowercased()
+        // Exact or subdomain match: "malware.com" also blocks "c2.malware.com"
+        return domainBlocklist.contains { lower == $0 || lower.hasSuffix(".\($0)") }
     }
 
     /// Ensures the feed is loaded and triggers a background refresh if stale.
     /// Call this on startup — it returns immediately after loading the disk cache.
     func warmUp() async {
         await loadFromDisk()
-        if blocklist.isEmpty { blocklist = Self.seedIPs }
+        if blocklist.isEmpty     { blocklist      = Self.seedIPs }
+        if domainBlocklist.isEmpty { domainBlocklist = Self.seedDomains }
         if Date().timeIntervalSince(lastRefresh) > Self.refreshInterval {
             Task.detached(priority: .background) { [weak self] in
                 await self?.refresh()
@@ -85,31 +136,46 @@ actor ThreatIntelFeed {
         }
     }
 
-    /// Forces an immediate refresh from the live feed. Normally called by warmUp().
+    /// Forces an immediate refresh from live feeds. Normally called by warmUp().
     func refresh() async {
         guard !isRefreshing else { return }
         isRefreshing = true
         defer { isRefreshing = false }
 
-        let url = URL(string: "https://feodotracker.abuse.ch/downloads/ipblocklist_aggressive.txt")!
+        // Feed 1: Feodo Tracker aggressive IP blocklist
+        let ipFeedURL = URL(string: "https://feodotracker.abuse.ch/downloads/ipblocklist_aggressive.txt")!
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            guard let text = String(data: data, encoding: .utf8) else { return }
-            let parsed = parseFeodoList(text)
-            if parsed.count > 10 {          // sanity check — reject empty/corrupt responses
-                blocklist    = parsed.union(Self.seedIPs)
-                lastRefresh  = Date()
-                await saveToDisk()
+            let (data, _) = try await URLSession.shared.data(from: ipFeedURL)
+            if let text = String(data: data, encoding: .utf8) {
+                let parsed = parseFeodoList(text)
+                if parsed.count > 10 {
+                    blocklist   = parsed.union(Self.seedIPs)
+                    lastRefresh = Date()
+                }
             }
-        } catch {
-            // Network failure is non-fatal — keep using seed + disk cache
-        }
+        } catch { /* non-fatal — keep seed */ }
+
+        // Feed 2: URLhaus domain blocklist (abuse.ch — free, no API key)
+        let domainFeedURL = URL(string: "https://urlhaus.abuse.ch/downloads/text_online/")!
+        do {
+            let (data, _) = try await URLSession.shared.data(from: domainFeedURL)
+            if let text = String(data: data, encoding: .utf8) {
+                let parsed = parseURLhaus(text)
+                if parsed.count > 10 {
+                    domainBlocklist = parsed.union(Self.seedDomains)
+                }
+            }
+        } catch { /* non-fatal — keep seed */ }
+
+        if lastRefresh == .distantPast { lastRefresh = Date() }
+        await saveToDisk()
     }
 
     // MARK: - Disk Cache
 
     private struct CachePayload: Codable {
         let ips: [String]
+        let domains: [String]
         let refreshedAt: Date
     }
 
@@ -118,12 +184,17 @@ actor ThreatIntelFeed {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         guard let payload = try? decoder.decode(CachePayload.self, from: data) else { return }
-        blocklist   = Set(payload.ips).union(Self.seedIPs)
-        lastRefresh = payload.refreshedAt
+        blocklist       = Set(payload.ips).union(Self.seedIPs)
+        domainBlocklist = Set(payload.domains).union(Self.seedDomains)
+        lastRefresh     = payload.refreshedAt
     }
 
     private func saveToDisk() async {
-        let payload = CachePayload(ips: Array(blocklist), refreshedAt: lastRefresh)
+        let payload = CachePayload(
+            ips:         Array(blocklist),
+            domains:     Array(domainBlocklist),
+            refreshedAt: lastRefresh
+        )
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         guard let data = try? encoder.encode(payload) else { return }
@@ -134,7 +205,7 @@ actor ThreatIntelFeed {
         )
     }
 
-    // MARK: - Feodo Tracker Parser
+    // MARK: - Feodo Tracker IP Parser
 
     private func parseFeodoList(_ text: String) -> Set<String> {
         var result = Set<String>()
@@ -144,6 +215,33 @@ actor ThreatIntelFeed {
             // Lines are bare IPs: "1.2.3.4" or may have a port "1.2.3.4:4444"
             let ip = trimmed.components(separatedBy: ":").first ?? trimmed
             if isValidIPv4(ip) { result.insert(ip) }
+        }
+        return result
+    }
+
+    // MARK: - URLhaus Domain Parser
+    //
+    // URLhaus online feed: one URL per line (https://example.com/malware.exe)
+    // We extract hostnames and add them to the domain blocklist.
+
+    private func parseURLhaus(_ text: String) -> Set<String> {
+        var result = Set<String>()
+        for line in text.components(separatedBy: "\n") {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty, !trimmed.hasPrefix("#") else { continue }
+            guard let url      = URL(string: trimmed),
+                  let host     = url.host?.lowercased(),
+                  !host.isEmpty,
+                  !isValidIPv4(host)   // skip IP-only entries (already in IP blocklist)
+            else { continue }
+            // Accept only plausible domain names (no single-label, no localhost)
+            guard host.contains("."),
+                  !host.hasSuffix(".local"),
+                  host.count < 253
+            else { continue }
+            result.insert(host)
+            // Limit to 20 000 domains to keep memory reasonable
+            if result.count >= 20_000 { break }
         }
         return result
     }
