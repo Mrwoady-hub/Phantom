@@ -19,6 +19,13 @@ enum MitreTechnique: String, Codable, Hashable, Sendable {
     // 3.0 — network intelligence layer
     case unsecuredCredentials           = "T1552"  // cleartext creds in traffic (NetworkMiner)
     case encryptedChannel               = "T1573"  // suspicious TLS (tshark/Zeek)
+    // Fort Knox AV additions
+    case resourceHijacking              = "T1496"  // crypto mining / resource abuse
+    case hideArtifacts                  = "T1564"  // hidden files, directories
+    case userExecution                  = "T1204"  // user ran malicious file from disk
+    case malwareFamily                  = "T1587"  // known malware tool/implant
+    case externalRemoteServices         = "T1133"  // backdoor / remote access tool
+    case exploitPublicFacingApplication = "T1190"  // exploitation of local service
 
     var title: String {
         switch self {
@@ -33,6 +40,12 @@ enum MitreTechnique: String, Codable, Hashable, Sendable {
         case .impairDefenses:                 return "Impair Defenses"
         case .unsecuredCredentials:           return "Unsecured Credentials"
         case .encryptedChannel:               return "Encrypted Channel"
+        case .resourceHijacking:              return "Resource Hijacking"
+        case .hideArtifacts:                  return "Hide Artifacts"
+        case .userExecution:                  return "User Execution"
+        case .malwareFamily:                  return "Known Malware / Implant"
+        case .externalRemoteServices:         return "External Remote Services"
+        case .exploitPublicFacingApplication: return "Suspicious Binary in High-Risk Path"
         }
     }
 

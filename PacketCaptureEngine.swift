@@ -34,6 +34,12 @@ final class PacketCaptureEngine: ObservableObject {
     @Published private(set) var lastScanDate:    Date?
     @Published private(set) var lastError:       String?
 
+    // Helper availability — derived from SMAppService status check at init and
+    // whenever the user explicitly requests a recheck via refreshToolStatus().
+    // UI should observe this and disable / explain the Live Capture button when false.
+    @Published private(set) var helperAvailable: Bool = false
+    @Published private(set) var helperStatusMessage: String = "Checking…"
+
     // MARK: - Scan worker (actor — owns all scanner instances off main actor)
 
     private let scanWorker = ScanWorker()
@@ -80,6 +86,32 @@ final class PacketCaptureEngine: ObservableObject {
         // Auto-start Suricata stream immediately — pure file-watch, no root needed.
         // Begins capturing EVE log events before the user even visits the Network Intel tab.
         startSuricataStream()
+
+        // Check privileged helper status on init so the UI can immediately reflect
+        // whether Live Capture is available.  Non-blocking — runs after init returns.
+        Task { await self.refreshHelperStatus() }
+    }
+
+    // MARK: - Helper availability
+
+    /// Checks whether the privileged helper daemon is registered and reachable.
+    /// Sets `helperAvailable` and `helperStatusMessage` for UI binding.
+    /// Call this from `refreshToolStatus()` or whenever the settings pane is shown.
+    func refreshHelperStatus() async {
+        do {
+            let version = try await PrivilegedHelperClient.shared.helperVersion()
+            helperAvailable = true
+            helperStatusMessage = "Installed (v\(version))"
+        } catch {
+            helperAvailable = false
+            helperStatusMessage = "Privileged helper not installed. Open Settings to install it."
+        }
+    }
+
+    /// One-tap install wrapper for the Settings UI.
+    func installHelper() async {
+        await PrivilegedHelperClient.shared.installHelperIfNeeded()
+        await refreshHelperStatus()
     }
 
     // Sync ToolAvailability → toolActivity.isAvailable
@@ -120,6 +152,7 @@ final class PacketCaptureEngine: ObservableObject {
     func refreshToolStatus() {
         toolStatus = Self.checkTools()
         syncAvailability()
+        Task { await self.refreshHelperStatus() }
     }
 
     // MARK: - Suricata real-time stream
@@ -224,6 +257,16 @@ final class PacketCaptureEngine: ObservableObject {
 
     func startLiveCapture(interface: String = "en0") {
         guard !isLiveCapturing else { return }
+
+        // Gate on helper: pcap capture requires root-level access.
+        // Do not spin up a loop that will silently fail every 10 seconds.
+        guard helperAvailable else {
+            lastError = "Live Capture requires the privileged helper. " +
+                "Open Settings → Network Intelligence and tap Install Helper."
+            logger.warning("PacketCaptureEngine: startLiveCapture aborted — helper not available")
+            return
+        }
+
         isLiveCapturing = true
         liveStatus = "Starting…"
         stopAutoRefresh()
@@ -278,13 +321,25 @@ final class PacketCaptureEngine: ObservableObject {
                     lastScanDate = Date()
                     logger.info("PacketCaptureEngine: live cycle — \(pcapEvents.count) pcap events")
                 } else {
-                    lastError = "Capture returned no file — is the privileged helper installed?"
-                    markPcapTools(running: false, status: "No output")
+                    // Helper returned nil — it is not functioning correctly.
+                    // Stop the loop immediately; do not spin-retry every 10 s.
+                    lastError = "Privileged helper is installed but returned no capture file. " +
+                        "Try reinstalling the helper from Settings."
+                    markPcapTools(running: false, status: "Helper error")
+                    helperAvailable = false
+                    helperStatusMessage = "Helper unresponsive — reinstall from Settings."
+                    logger.error("PacketCaptureEngine: helper returned nil pcap — stopping live capture")
+                    break
                 }
             } catch {
-                lastError = "Capture error: \(error.localizedDescription)"
-                markPcapTools(running: false, status: "Error")
-                try? await Task.sleep(nanoseconds: 5_000_000_000)
+                // XPC connection failure — helper may have crashed or been uninstalled.
+                lastError = "Capture failed: \(error.localizedDescription). " +
+                    "Check the helper status in Settings."
+                markPcapTools(running: false, status: "Helper error")
+                helperAvailable = false
+                helperStatusMessage = "Helper unreachable — reinstall from Settings."
+                logger.error("PacketCaptureEngine: capture XPC error — \(error.localizedDescription)")
+                break   // Stop the loop; do not retry
             }
 
             if Task.isCancelled { break }
@@ -319,6 +374,14 @@ final class PacketCaptureEngine: ObservableObject {
         }
 
         var allNew: [PacketEvent] = []
+
+        // --- lsof: built-in connection enumeration (always runs, no tools needed) ---
+        markTool(.tcpdump, running: true, status: "Enumerating live connections…")
+        let lsofEvents = await scanWorker.runLsof()
+        mergeNewEvents(lsofEvents, from: .tcpdump)
+        allNew += lsofEvents
+        markTool(.tcpdump, running: false, status: "Done",
+                 count: (toolActivity[.tcpdump]?.eventCount ?? 0) + lsofEvents.count)
 
         // --- Suricata (only poll-scan here if the stream is NOT running) ---
         if toolStatus.suricata && suricataSource == nil {

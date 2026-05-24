@@ -21,12 +21,16 @@ struct ScanSnapshot: Sendable {
             StartupEvent(date: now, process: $0)
         }
 
-        // Three sensors run concurrently with individual timeouts
+        // Four sensors run concurrently with individual timeouts
         async let proc = withTimeout(seconds: 8)  { await collectProcessIncidents() }
         async let net  = withTimeout(seconds: 10) { await collectNetworkIncidents() }
         async let pers = withTimeout(seconds: 6)  { await collectPersistenceIncidents() }
+        async let fs   = withTimeout(seconds: 8)  { await collectFileSystemIncidents() }
 
-        let all = (await proc ?? []) + (await net ?? []) + (await pers ?? [])
+        // Break into two steps to help the type-checker
+        let procResults = (await proc ?? []) + (await net ?? [])
+        let sysResults  = (await pers ?? []) + (await fs   ?? [])
+        let all         = procResults + sysResults
         return ScanSnapshot(incidents: all, launches: launches)
     }
 
@@ -55,12 +59,21 @@ struct ScanSnapshot: Sendable {
         var incidents: [Incident] = []
 
         for entry in processes {
-            // --- Tier 3: rule-based detectors run on ALL processes (no trust-gate) ---
-            if let inc = masqueradingIncident(for: entry)     { incidents.append(inc) }
+            // --- Tier 1: malware signature database (highest priority) ---
+            if let inc = malwareSignatureIncident(for: entry)  { incidents.append(inc) }
+            if let inc = cryptoMinerIncident(for: entry)       { incidents.append(inc) }
+
+            // --- Tier 2: behavioral rule-based detectors run on ALL processes ---
+            if let inc = masqueradingIncident(for: entry)      { incidents.append(inc) }
             if let inc = credentialDumpingIncident(for: entry) { incidents.append(inc) }
-            if let inc = impairDefensesIncident(for: entry)   { incidents.append(inc) }
-            if let inc = processInjectionIncident(for: entry) { incidents.append(inc) }
-            if let inc = sysInfoDiscoveryIncident(for: entry) { incidents.append(inc) }
+            if let inc = impairDefensesIncident(for: entry)    { incidents.append(inc) }
+            if let inc = processInjectionIncident(for: entry)  { incidents.append(inc) }
+            if let inc = sysInfoDiscoveryIncident(for: entry)  { incidents.append(inc) }
+
+            // --- Tier 3: parent-child anomalies (requires full process list) ---
+            if let inc = parentChildAnomalyIncident(for: entry, allProcesses: processes) {
+                incidents.append(inc)
+            }
 
             // --- Existing trust-based detection (unchanged) ---
             guard !entry.isDefinitelySystemProcess else { continue }
@@ -104,7 +117,7 @@ struct ScanSnapshot: Sendable {
             )
             guard trust.level == .suspicious || trust.level == .unclassified else { continue }
 
-            // Threat intel check — escalate if the remote IP is on the blocklist
+            // Threat intel — blocked IP
             let remoteIP   = conn.name.extractedIPv4
             let isThreatIP: Bool
             if let ip = remoteIP {
@@ -112,10 +125,32 @@ struct ScanSnapshot: Sendable {
             } else {
                 isThreatIP = false
             }
-            let effectiveSev: Severity = isThreatIP ? .high
+
+            // Domain threat intel
+            let remoteHost  = conn.name.components(separatedBy: ":").first ?? conn.name
+            let isThreatDomain = await ThreatIntelFeed.shared.isBlockedDomain(remoteHost)
+
+            // Crypto miner port check
+            let remotePort  = conn.name.components(separatedBy: ":").last.flatMap(Int.init) ?? 0
+            let isMiningPort = MalwareSignatures.isMiningPort(remotePort)
+            let isMiningProcess = MalwareSignatures.isMaliciousName(
+                URL(fileURLWithPath: conn.command).lastPathComponent
+            )
+            let isMiner = isMiningPort || isMiningProcess
+
+            let isAnyThreat = isThreatIP || isThreatDomain || isMiner
+
+            let effectiveSev: Severity = isAnyThreat ? .high
                 : trust.level == .suspicious ? .high : .low
-            let effectiveConf: DetectionConfidence = isThreatIP ? .high : .medium
-            let threatLabel     = isThreatIP ? " [THREAT INTEL MATCH]" : ""
+            let effectiveConf: DetectionConfidence = isAnyThreat ? .high : .medium
+
+            var labels: [String] = []
+            if isThreatIP     { labels.append("BLOCKED IP") }
+            if isThreatDomain { labels.append("BLOCKED DOMAIN") }
+            if isMiner        { labels.append("CRYPTO MINER") }
+            let threatLabel = labels.isEmpty ? "" : " [\(labels.joined(separator: " · "))]"
+
+            let technique: MitreTechnique = isMiner ? .resourceHijacking : .applicationLayerProtocol
 
             incidents.append(Incident(
                 name:       "\(conn.command) → external connection\(threatLabel)",
@@ -123,17 +158,18 @@ struct ScanSnapshot: Sendable {
                 confidence: effectiveConf,
                 detail:     "\(conn.command) → \(conn.name) (\(conn.protocolName))",
                 source:     .network,
-                technique:  .applicationLayerProtocol,
-                trust:      isThreatIP ? .suspicious : trust.level,
+                technique:  technique,
+                trust:      isAnyThreat ? .suspicious : trust.level,
                 evidence: [
-                    .init(label: "Command",      value: conn.command),
-                    .init(label: "PID",          value: conn.processID.map(String.init) ?? "—"),
-                    .init(label: "Protocol",     value: conn.protocolName),
-                    .init(label: "Endpoint",     value: conn.name),
-                    .init(label: "State",        value: conn.state ?? "—"),
-                    .init(label: "Signed",       value: trust.isSigned ? "Yes" : "No"),
-                    .init(label: "Trust",        value: trust.level.rawValue),
-                    .init(label: "Threat Intel", value: isThreatIP ? "BLOCKED IP" : "No match")
+                    .init(label: "Command",       value: conn.command),
+                    .init(label: "PID",           value: conn.processID.map(String.init) ?? "—"),
+                    .init(label: "Protocol",      value: conn.protocolName),
+                    .init(label: "Endpoint",      value: conn.name),
+                    .init(label: "State",         value: conn.state ?? "—"),
+                    .init(label: "Signed",        value: trust.isSigned ? "Yes" : "No"),
+                    .init(label: "Trust",         value: trust.level.rawValue),
+                    .init(label: "Threat Intel",  value: isThreatIP ? "BLOCKED IP" : (isThreatDomain ? "BLOCKED DOMAIN" : "No match")),
+                    .init(label: "Miner Signal",  value: isMiner ? "YES – stratum port or miner process" : "No")
                 ]
             ))
         }
@@ -185,6 +221,114 @@ struct ScanSnapshot: Sendable {
                 rawDetail: record.path
             ))
         }
+        return incidents
+    }
+
+    // MARK: - File System Scan (4th sensor)
+
+    /// Scans high-risk drop locations for suspicious or malware-named executables.
+    /// Detects: unsigned executables in temp/download paths, known malware filenames,
+    /// hidden executable files (dot-prefixed) in the home directory.
+    private static func collectFileSystemIncidents() async -> [Incident] {
+        var incidents: [Incident] = []
+        let fm = FileManager.default
+
+        // ── Scan high-risk drop locations for executables ──────────────────────
+        let scanTargets: [(path: String, label: String)] = MalwareSignatures.highRiskDropPaths
+            .map { ($0, URL(fileURLWithPath: $0).lastPathComponent) }
+
+        for target in scanTargets {
+            guard let files = try? fm.contentsOfDirectory(atPath: target.path) else { continue }
+
+            for file in files.prefix(200) {               // cap to avoid slowdown
+                let fullPath = (target.path as NSString).appendingPathComponent(file)
+                var isDir: ObjCBool = false
+                guard fm.fileExists(atPath: fullPath, isDirectory: &isDir),
+                      !isDir.boolValue else { continue }
+
+                // Check execute bit
+                let attrs       = (try? fm.attributesOfItem(atPath: fullPath)) ?? [:]
+                let perms       = attrs[.posixPermissions] as? Int ?? 0
+                let isExecutable = (perms & 0o111) != 0
+
+                let filename    = (file as NSString).lastPathComponent.lowercased()
+                let isMalName   = MalwareSignatures.isMaliciousName(filename)
+
+                // Report: known-malware name OR unsigned executable in /tmp
+                if isMalName || (isExecutable && (target.path.contains("/tmp") ||
+                                                   target.path.contains("Downloads"))) {
+                    let trust = TrustEvaluator.evaluateProcess(
+                        path: fullPath, commandToken: filename
+                    )
+                    // Skip if it's a legitimately signed known app
+                    guard trust.level != .trustedSystem,
+                          trust.level != .knownApplication
+                    else { continue }
+
+                    let sev: Severity = isMalName ? .high : .medium
+                    incidents.append(Incident(
+                        name:       isMalName
+                            ? "⚠️ Known Malware Detected — \(file)"
+                            : "Suspicious Executable in \(target.label)",
+                        severity:   sev,
+                        confidence: isMalName ? .high : .medium,
+                        detail:     "Executable found in \(target.label): \(fullPath)",
+                        source:     .process,
+                        technique:  isMalName ? .malwareFamily : .userExecution,
+                        trust:      isMalName ? .suspicious : trust.level,
+                        evidence: [
+                            .init(label: "Path",        value: fullPath),
+                            .init(label: "Location",    value: target.label),
+                            .init(label: "Executable",  value: isExecutable ? "Yes" : "No"),
+                            .init(label: "Signed",      value: trust.isSigned ? "Yes" : "No"),
+                            .init(label: "Team ID",     value: trust.teamIdentifier ?? "(unsigned)"),
+                            .init(label: "Detection",   value: isMalName
+                                ? "Matches known malware name database"
+                                : "Unsigned executable in high-risk path")
+                        ],
+                        rawDetail: fullPath
+                    ))
+                }
+            }
+        }
+
+        // ── Hidden executables in home directory ───────────────────────────────
+        let homeDir      = NSHomeDirectory()
+        let homeContents = (try? fm.contentsOfDirectory(atPath: homeDir)) ?? []
+        for item in homeContents where item.hasPrefix(".") {
+            let fullPath  = homeDir + "/" + item
+            var isDir: ObjCBool = false
+            guard fm.fileExists(atPath: fullPath, isDirectory: &isDir),
+                  !isDir.boolValue else { continue }
+
+            let attrs    = (try? fm.attributesOfItem(atPath: fullPath)) ?? [:]
+            let perms    = attrs[.posixPermissions] as? Int ?? 0
+            guard (perms & 0o111) != 0 else { continue }   // skip non-executable hidden files
+
+            // Skip common legit hidden executables
+            let knownSafe: Set<String> = [
+                ".DS_Store", ".localized", ".CFUserTextEncoding",
+                ".bash_history", ".zsh_history", ".profile", ".bashrc", ".zshrc"
+            ]
+            guard !knownSafe.contains(item) else { continue }
+
+            incidents.append(Incident(
+                name:       "Hidden Executable — \(item)",
+                severity:   .medium,
+                confidence: .medium,
+                detail:     "Dot-prefixed file with execute permissions found in home directory",
+                source:     .process,
+                technique:  .hideArtifacts,
+                trust:      .unclassified,
+                evidence: [
+                    .init(label: "Path",   value: fullPath),
+                    .init(label: "Name",   value: item),
+                    .init(label: "Reason", value: "Hidden file (dot-prefixed) with execute bit set in home directory")
+                ],
+                rawDetail: fullPath
+            ))
+        }
+
         return incidents
     }
 
@@ -334,6 +478,133 @@ struct ScanSnapshot: Sendable {
             evidence:   processEvidence(entry, TrustEvaluator.evaluateProcess(
                 path: entry.executablePath, commandToken: entry.commandName.lowercased()
             )),
+            rawDetail: "\(entry.executablePath) \(entry.arguments)"
+        )
+    }
+
+    // MARK: - New Fort Knox Detection Rules
+
+    /// Checks process name against the comprehensive `MalwareSignatures` database.
+    /// This is the highest-signal detector — if a binary name matches a known
+    /// malware family, it's an immediate HIGH severity finding.
+    static func malwareSignatureIncident(for entry: ProcessEntry) -> Incident? {
+        let cmd = entry.commandName.lowercased()
+        guard MalwareSignatures.isMaliciousName(cmd) else { return nil }
+
+        let trust = TrustEvaluator.evaluateProcess(
+            path: entry.executablePath, commandToken: cmd
+        )
+        // Signed Apple/known apps with this name are still flagged — malware names
+        // are chosen to avoid collisions with system binaries.
+        return Incident(
+            name:       "⚠️ Known Malware — \(entry.commandName)",
+            severity:   .high,
+            confidence: .high,
+            detail:     "Process name matches known malware/offensive tool database",
+            source:     .process,
+            technique:  .malwareFamily,
+            trust:      .suspicious,
+            evidence:   processEvidence(entry, trust) + [
+                .init(label: "Detection", value: "Name match in MalwareSignatures database"),
+                .init(label: "Category",  value: "Known malware / offensive tool")
+            ],
+            rawDetail: "\(entry.executablePath) \(entry.arguments)"
+        )
+    }
+
+    /// Detects crypto-mining processes: known miner binary names, stratum protocol
+    /// arguments, and wallet address patterns in command-line arguments.
+    static func cryptoMinerIncident(for entry: ProcessEntry) -> Incident? {
+        let cmd  = entry.commandName.lowercased()
+        let args = entry.arguments.lowercased()
+
+        // Known miner binary name
+        let isMinerName = ["xmrig","cpuminer","minerd","xmr-stak","ethminer",
+                           "nbminer","cgminer","bfgminer","sgminer","t-rex"].contains(cmd)
+
+        // Stratum protocol in arguments
+        let hasStratumArg = args.contains("stratum+tcp") || args.contains("stratum+ssl") ||
+                            args.contains("stratum://") || args.contains("-o pool.")
+
+        // Mining pool domain in arguments
+        let hasMiningPool = MalwareSignatures.miningPoolDomains.contains { args.contains($0) }
+
+        // Monero wallet address pattern (95-char base58 starting with 4)
+        let hasWalletArg  = args.range(of: "\\b4[0-9A-Za-z]{93}\\b",
+                                        options: .regularExpression) != nil
+
+        guard isMinerName || hasStratumArg || hasMiningPool || hasWalletArg else { return nil }
+
+        let trust = TrustEvaluator.evaluateProcess(
+            path: entry.executablePath, commandToken: cmd
+        )
+        var signals: [String] = []
+        if isMinerName   { signals.append("miner binary name") }
+        if hasStratumArg { signals.append("stratum:// protocol in args") }
+        if hasMiningPool { signals.append("mining pool domain in args") }
+        if hasWalletArg  { signals.append("crypto wallet address in args") }
+
+        return Incident(
+            name:       "Crypto Miner — \(entry.commandName)",
+            severity:   .high,
+            confidence: .high,
+            detail:     "Process shows crypto-mining indicators: \(signals.joined(separator: ", "))",
+            source:     .process,
+            technique:  .resourceHijacking,
+            trust:      .suspicious,
+            evidence:   processEvidence(entry, trust) + [
+                .init(label: "Mining Signals", value: signals.joined(separator: " · "))
+            ],
+            rawDetail: "\(entry.executablePath) \(entry.arguments)"
+        )
+    }
+
+    /// Detects anomalous parent-child process relationships: e.g. a web browser or
+    /// document editor spawning a shell interpreter — a common Living-off-the-Land
+    /// technique used by malware to evade process-based detection.
+    static func parentChildAnomalyIncident(
+        for entry: ProcessEntry,
+        allProcesses: [ProcessEntry]
+    ) -> Incident? {
+        let cmd = entry.commandName.lowercased()
+
+        // Child must be a script interpreter or shell
+        let isInterpreterChild = ["bash","sh","zsh","python","python3","ruby",
+                                   "perl","osascript","node","php"].contains(cmd)
+        guard isInterpreterChild else { return nil }
+
+        // Find parent
+        guard let parent = allProcesses.first(where: { $0.pid == entry.ppid }) else { return nil }
+        let parentName = parent.commandName.lowercased()
+
+        // Suspicious parents: GUI apps that shouldn't spawn shells
+        let suspiciousParents: Set<String> = [
+            "safari", "firefox", "chrome", "chromium", "msedge", "opera",
+            "pages", "numbers", "keynote", "word", "excel", "powerpoint",
+            "acrobat", "preview", "textedit",
+            "finder",
+            "mail", "airmail", "spark",
+            "slack", "teams", "discord", "zoom"
+        ]
+        guard suspiciousParents.contains(parentName) else { return nil }
+
+        let trust = TrustEvaluator.evaluateProcess(
+            path: entry.executablePath, commandToken: cmd
+        )
+        return Incident(
+            name:       "Suspicious Child Process — \(parent.commandName) → \(entry.commandName)",
+            severity:   .high,
+            confidence: .high,
+            detail:     "\(parent.commandName) spawned shell interpreter \(entry.commandName) (PID \(entry.pid))",
+            source:     .process,
+            technique:  .commandAndScriptingInterpreter,
+            trust:      .suspicious,
+            evidence:   processEvidence(entry, trust) + [
+                .init(label: "Parent",       value: parent.commandName),
+                .init(label: "Parent Path",  value: parent.executablePath),
+                .init(label: "Parent PID",   value: String(parent.pid)),
+                .init(label: "Anomaly",      value: "GUI app spawned shell — Living-off-the-Land indicator")
+            ],
             rawDetail: "\(entry.executablePath) \(entry.arguments)"
         )
     }

@@ -70,6 +70,20 @@
 		842467487A94810181BA57A3 /* PacketCaptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76128648D55987C3B80C8B6B /* PacketCaptureEngine.swift */; };
 		25F38FFE38328149746DC672 /* NetworkIntelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DAA420E33DC38343C8411D /* NetworkIntelView.swift */; };
 		D5E8410F76B23A9C51FE6027 /* ScanWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3A72F91C4D05E6F28A1093C /* ScanWorker.swift */; };
+		FA0000022F80000000C52EE0 /* PhantomAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000012F80000000C52EE0 /* PhantomAI.swift */; };
+		FA0000042F80000000C52EE0 /* IncidentExplainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000032F80000000C52EE0 /* IncidentExplainView.swift */; };
+		FA0000062F80000000C52EE0 /* PhantomAIAnalystView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000052F80000000C52EE0 /* PhantomAIAnalystView.swift */; };
+		FA0000082F80000000C52EE0 /* PhantomAIAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000072F80000000C52EE0 /* PhantomAIAgent.swift */; };
+		FA0000092F80000000C52EE0 /* LsofScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000102F80000000C52EE0 /* LsofScanner.swift */; };
+		FA0000112F80000000C52EE0 /* MalwareSignatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000122F80000000C52EE0 /* MalwareSignatures.swift */; };
+		FA0000132F80000000C52EE0 /* PersistenceDelta.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000142F80000000C52EE0 /* PersistenceDelta.swift */; };
+		FA0000152F80000000C52EE0 /* PersistenceWatchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000162F80000000C52EE0 /* PersistenceWatchService.swift */; };
+		FA0000172F80000000C52EE0 /* IncidentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0000182F80000000C52EE0 /* IncidentStore.swift */; };
+		FC0000012FA0000000C52EE0 /* IncidentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000032FA0000000C52EE0 /* IncidentStoreTests.swift */; };
+		FC0000022FA0000000C52EE0 /* AuditIntegrityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0000042FA0000000C52EE0 /* AuditIntegrityTests.swift */; };
+		FB0000012F90000000C52EE0 /* PhantomAI.mlpackage in Resources */ = {isa = PBXBuildFile; fileRef = FB0000002F90000000C52EE0 /* PhantomAI.mlpackage */; };
+		FB0000032F90000000C52EE0 /* vocab.json in Resources */ = {isa = PBXBuildFile; fileRef = FB0000022F90000000C52EE0 /* vocab.json */; };
+		FB0000052F90000000C52EE0 /* merges.txt in Resources */ = {isa = PBXBuildFile; fileRef = FB0000042F90000000C52EE0 /* merges.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -150,6 +164,8 @@
 		B30000120000000000C52EE0 /* ThreatIntelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreatIntelTests.swift; sourceTree = "<group>"; };
 		B30000140000000000C52EE0 /* MitreMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitreMappingTests.swift; sourceTree = "<group>"; };
 		B30000160000000000C52EE0 /* HelperCaptureOutputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperCaptureOutputTests.swift; sourceTree = "<group>"; };
+		FC0000032FA0000000C52EE0 /* IncidentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncidentStoreTests.swift; sourceTree = "<group>"; };
+		FC0000042FA0000000C52EE0 /* AuditIntegrityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditIntegrityTests.swift; sourceTree = "<group>"; };
 		C40000082F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGPrivilegedHelperProtocol.swift; sourceTree = "<group>"; };
 		C40000092F72000000C52EE0 /* PrivilegedHelperClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivilegedHelperClient.swift; sourceTree = "<group>"; };
 		C400000B2F72000000C52EE0 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -169,6 +185,18 @@
 		76128648D55987C3B80C8B6B /* PacketCaptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketCaptureEngine.swift; sourceTree = "<group>"; };
 		17DAA420E33DC38343C8411D /* NetworkIntelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkIntelView.swift; sourceTree = "<group>"; };
 		B3A72F91C4D05E6F28A1093C /* ScanWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanWorker.swift; sourceTree = "<group>"; };
+		FA0000012F80000000C52EE0 /* PhantomAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhantomAI.swift; sourceTree = "<group>"; };
+		FA0000032F80000000C52EE0 /* IncidentExplainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncidentExplainView.swift; sourceTree = "<group>"; };
+		FA0000052F80000000C52EE0 /* PhantomAIAnalystView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhantomAIAnalystView.swift; sourceTree = "<group>"; };
+		FA0000072F80000000C52EE0 /* PhantomAIAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhantomAIAgent.swift; sourceTree = "<group>"; };
+		FA0000102F80000000C52EE0 /* LsofScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LsofScanner.swift; sourceTree = "<group>"; };
+		FA0000122F80000000C52EE0 /* MalwareSignatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MalwareSignatures.swift; sourceTree = "<group>"; };
+		FA0000142F80000000C52EE0 /* PersistenceDelta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceDelta.swift; sourceTree = "<group>"; };
+		FA0000162F80000000C52EE0 /* PersistenceWatchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceWatchService.swift; sourceTree = "<group>"; };
+		FA0000182F80000000C52EE0 /* IncidentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncidentStore.swift; sourceTree = "<group>"; };
+		FB0000002F90000000C52EE0 /* PhantomAI.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper.mlpackage; path = "Phantom/Resources/PhantomAI.mlpackage"; sourceTree = SOURCE_ROOT; };
+		FB0000022F90000000C52EE0 /* vocab.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Phantom/Resources/vocab.json"; sourceTree = SOURCE_ROOT; };
+		FB0000042F90000000C52EE0 /* merges.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Phantom/Resources/merges.txt"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -237,6 +265,17 @@
 				76128648D55987C3B80C8B6B /* PacketCaptureEngine.swift */,
 				B3A72F91C4D05E6F28A1093C /* ScanWorker.swift */,
 				17DAA420E33DC38343C8411D /* NetworkIntelView.swift */,
+				FA0000012F80000000C52EE0 /* PhantomAI.swift */,
+				FA0000032F80000000C52EE0 /* IncidentExplainView.swift */,
+				FA0000052F80000000C52EE0 /* PhantomAIAnalystView.swift */,
+				FA0000072F80000000C52EE0 /* PhantomAIAgent.swift */,
+				FA0000102F80000000C52EE0 /* LsofScanner.swift */,
+				FA0000122F80000000C52EE0 /* MalwareSignatures.swift */,
+				FA0000142F80000000C52EE0 /* PersistenceDelta.swift */,
+				FA0000162F80000000C52EE0 /* PersistenceWatchService.swift */,
+				FB0000002F90000000C52EE0 /* PhantomAI.mlpackage */,
+				FB0000022F90000000C52EE0 /* vocab.json */,
+				FB0000042F90000000C52EE0 /* merges.txt */,
 				766A15922F6798BD00C52EE0 /* DetectionPresentation.swift */,
 				766A15952F679D0900C52EE0 /* IncidentPresentation.swift */,
 				766A15972F68249C00C52EE0 /* MonitoringHealth.swift */,
@@ -292,6 +331,8 @@
 				B30000120000000000C52EE0 /* ThreatIntelTests.swift */,
 				B30000140000000000C52EE0 /* MitreMappingTests.swift */,
 				B30000160000000000C52EE0 /* HelperCaptureOutputTests.swift */,
+				FC0000032FA0000000C52EE0 /* IncidentStoreTests.swift */,
+				FC0000042FA0000000C52EE0 /* AuditIntegrityTests.swift */,
 			);
 			path = PhantomTests;
 			sourceTree = "<group>";
@@ -417,6 +458,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB0000012F90000000C52EE0 /* PhantomAI.mlpackage in Resources */,
+				FB0000032F90000000C52EE0 /* vocab.json in Resources */,
+				FB0000052F90000000C52EE0 /* merges.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -477,6 +521,15 @@
 				A20000082F70200100C52EE0 /* ThreatIntelFeed.swift in Sources */,
 				C40000012F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift in Sources */,
 				C40000022F72000000C52EE0 /* PrivilegedHelperClient.swift in Sources */,
+				FA0000022F80000000C52EE0 /* PhantomAI.swift in Sources */,
+				FA0000042F80000000C52EE0 /* IncidentExplainView.swift in Sources */,
+				FA0000062F80000000C52EE0 /* PhantomAIAnalystView.swift in Sources */,
+				FA0000082F80000000C52EE0 /* PhantomAIAgent.swift in Sources */,
+				FA0000092F80000000C52EE0 /* LsofScanner.swift in Sources */,
+				FA0000112F80000000C52EE0 /* MalwareSignatures.swift in Sources */,
+				FA0000132F80000000C52EE0 /* PersistenceDelta.swift in Sources */,
+				FA0000152F80000000C52EE0 /* PersistenceWatchService.swift in Sources */,
+				FA0000172F80000000C52EE0 /* IncidentStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,6 +544,8 @@
 				B30000150000000000C52EE0 /* MitreMappingTests.swift in Sources */,
 				B30000170000000000C52EE0 /* HelperCaptureOutputTests.swift in Sources */,
 				B30000180000000000C52EE0 /* HelperCaptureOutput.swift in Sources */,
+				FC0000012FA0000000C52EE0 /* IncidentStoreTests.swift in Sources */,
+				FC0000022FA0000000C52EE0 /* AuditIntegrityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -750,6 +805,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.woady.phantom.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -765,6 +821,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.woady.phantom.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

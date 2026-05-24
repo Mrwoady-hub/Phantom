@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var model: AppModel
+    @EnvironmentObject private var engine: PacketCaptureEngine
 
     var body: some View {
         Form {
@@ -60,6 +61,41 @@ struct SettingsView: View {
                 .onAppear { model.refreshNotificationAuthorizationStatus() }
             }
 
+            Section("Network Intelligence") {
+                HStack(spacing: 10) {
+                    Image(systemName: engine.helperAvailable
+                          ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+                        .foregroundStyle(engine.helperAvailable ? .green : .orange)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Privileged Helper")
+                            .font(.callout)
+                        Text(engine.helperStatusMessage)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    if !engine.helperAvailable {
+                        Button("Install Helper") {
+                            Task { await engine.installHelper() }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                        .tint(.orange)
+                    }
+                }
+                .onAppear { Task { await engine.refreshHelperStatus() } }
+
+                if engine.helperAvailable {
+                    Text("Live packet capture is enabled. Raw pcap data is captured by the helper and processed locally — no data leaves this device.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Without the helper, Phantom uses lsof for connection monitoring. Live pcap capture (including TShark, tcpdump, Zeek, and Suricata integration) requires the privileged helper.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
             Section("Actions") {
                 HStack {
                     Button("Save Settings")    { model.saveSettings() }
@@ -79,7 +115,7 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .padding()
-        .frame(width: 520, height: 460)
+        .frame(width: 560, height: 580)
     }
 
     private func intervalLabel(_ seconds: Double) -> String {

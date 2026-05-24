@@ -17,14 +17,14 @@ enum ScanHistoryStore {
 
     /// Maximum number of records retained. At the 60-second default scan
     /// interval this is ~25 hours of history; at 300 s it is ~5 days.
-    static let maxRecords = 1500
+    nonisolated static let maxRecords = 1500
 
     // MARK: - Storage
 
-    private static let directoryName = "Phantom"
-    private static let fileName      = "Phantom-History.json"
+    nonisolated private static let directoryName = "Phantom"
+    nonisolated private static let fileName      = "Phantom-History.json"
 
-    private static var fileURL: URL {
+    nonisolated private static var fileURL: URL {
         let base = FileManager.default.urls(
             for: .applicationSupportDirectory,
             in: .userDomainMask
@@ -41,7 +41,7 @@ enum ScanHistoryStore {
     // MARK: - Public Interface
 
     /// Loads the persisted history, newest first. Returns [] on any error.
-    static func load() -> [ScanRecord] {
+    nonisolated static func load() -> [ScanRecord] {
         guard let data = try? Data(contentsOf: fileURL) else { return [] }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -52,7 +52,7 @@ enum ScanHistoryStore {
     /// Prepends `record` to the history and trims to `maxRecords`, then persists.
     /// Returns the updated history newest-first.
     @discardableResult
-    static func append(_ record: ScanRecord) -> [ScanRecord] {
+    nonisolated static func append(_ record: ScanRecord) -> [ScanRecord] {
         var records = load()
         records.insert(record, at: 0)
         if records.count > maxRecords {
@@ -64,7 +64,7 @@ enum ScanHistoryStore {
 
     // MARK: - Private
 
-    private static func save(_ records: [ScanRecord]) {
+    nonisolated private static func save(_ records: [ScanRecord]) {
         let encoder = JSONEncoder()
         encoder.outputFormatting     = [.prettyPrinted, .sortedKeys]
         encoder.dateEncodingStrategy = .iso8601

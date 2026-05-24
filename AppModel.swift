@@ -37,10 +37,44 @@ final class AppModel: NSObject, ObservableObject {
         degradationReasons: []
     )
 
-    private let telemetryBroker = TelemetryBroker()
+    private let telemetryBroker      = TelemetryBroker()
+    private let persistenceWatcher   = PersistenceWatchService()
     private var monitoringTask: Task<Void, Never>?
     private var rescanTask: Task<Void, Never>?
     private static let maxAuditEvents = 1000
+
+    // Serialised background I/O actors — keep synchronous JSON reads/writes off
+    // @MainActor so the UI never hitches waiting for disk operations.
+    private let auditQueue   = AppModel.AuditQueue()
+    private let historyQueue = AppModel.HistoryQueue()
+
+    // MARK: - Background I/O actors
+
+    /// Serialises all AuditTrailStore operations on a non-main executor.
+    private actor AuditQueue {
+        func append(
+            action:         AuditAction,
+            incidentFamily: String?,
+            incidentName:   String?,
+            details:        String,
+            operatorName:   String
+        ) -> [AuditEvent] {
+            AuditTrailStore.append(
+                action:         action,
+                incidentFamily: incidentFamily,
+                incidentName:   incidentName,
+                details:        details,
+                operatorName:   operatorName
+            )
+        }
+    }
+
+    /// Serialises all ScanHistoryStore operations on a non-main executor.
+    private actor HistoryQueue {
+        func append(_ record: ScanRecord) -> [ScanRecord] {
+            ScanHistoryStore.append(record)
+        }
+    }
 
     // MARK: - Init
 
@@ -59,6 +93,7 @@ final class AppModel: NSObject, ObservableObject {
         auditTrail     = AuditTrailStore.load()
         suppressedKeys = SuppressionStore.load()
         scanHistory    = ScanHistoryStore.load()
+        incidents      = IncidentStore.load()   // restore last known state on cold launch
 
         // Request notification permission if enabled (silently — system will
         // only show the prompt once; subsequent calls return current status).
@@ -69,6 +104,11 @@ final class AppModel: NSObject, ObservableObject {
         // then async network refresh if stale — never blocks the UI).
         Task.detached(priority: .background) {
             await ThreatIntelFeed.shared.warmUp()
+        }
+
+        // Wire live persistence watcher — fires immediately when LaunchAgents/Daemons change.
+        persistenceWatcher.onDeltasDetected = { [weak self] deltas in
+            self?.ingestPersistenceDeltas(deltas)
         }
 
         launches = [StartupEvent(date: Date(), process: "Phantom")]
@@ -158,6 +198,7 @@ final class AppModel: NSObject, ObservableObject {
             degradationReasons: ["Initial scan pending."]
         )
         recordAudit(.monitoringStarted, details: "Monitoring loop started.")
+        persistenceWatcher.startWatching()   // live kqueue watch — no polling
         if triggerInitialScan { rescanNow() }
 
         monitoringTask = Task { [weak self] in
@@ -191,6 +232,7 @@ final class AppModel: NSObject, ObservableObject {
             persistenceHealthy: health.persistenceHealthy,
             degradationReasons: ["Monitoring stopped."]
         )
+        persistenceWatcher.stopWatching()
         recordAudit(.monitoringStopped, details: "Monitoring loop stopped.")
     }
 
@@ -251,7 +293,7 @@ final class AppModel: NSObject, ObservableObject {
             degradationReasons:   []
         )
 
-        // Record a history snapshot for trend analysis
+        // Record a history snapshot for trend analysis — off-main-actor I/O.
         let active = incidents.filter { $0.status == .active && !isSuppressed($0) }
         let record = ScanRecord(
             riskScore:     riskScore,
@@ -261,18 +303,27 @@ final class AppModel: NSObject, ObservableObject {
             mediumCount:   active.filter { $0.severity == .medium }.count,
             lowCount:      active.filter { $0.severity == .low }.count
         )
-        scanHistory = ScanHistoryStore.append(record)
+        let hq = historyQueue
+        Task { [weak self] in
+            let updated = await hq.append(record)
+            await MainActor.run { [weak self] in self?.scanHistory = updated }
+        }
 
         // Fire notifications for newly discovered high/medium incidents
         if settings.enableNotifications {
             let newIncidents = active.filter { !knownFamilies.contains($0.family) }
             sendNotifications(for: newIncidents)
         }
+
+        // Keep the analyst AI's live telemetry context current so "check my system"
+        // questions return facts from this scan, not stale prior data.
+        PhantomAI.shared.setSystemContext(incidents: incidents, health: health)
     }
 
     func clearIncidents() {
         incidents.removeAll(); launches.removeAll()
         selectedIncident = nil; riskScore = 0; lastError = nil
+        IncidentStore.clear()
         recordAudit(.incidentsCleared, details: "All incidents cleared.")
     }
 
@@ -444,6 +495,83 @@ final class AppModel: NSObject, ObservableObject {
         UNUserNotificationCenter.current().add(request)
     }
 
+    // MARK: - Live Persistence Delta Ingestion
+
+    /// Called immediately by `PersistenceWatchService` when a filesystem change is
+    /// detected in a watched persistence directory. Does NOT wait for the next full
+    /// scan cycle — the incident appears on the dashboard within ~300 ms of the change.
+    ///
+    /// - Added items   → create new HIGH incident + audit entry + notification
+    /// - Removed items → resolve matching active incident + audit entry
+    private func ingestPersistenceDeltas(_ deltas: [PersistenceDelta]) {
+        guard !deltas.isEmpty else { return }
+
+        var newFamilies: Set<String> = []
+
+        for delta in deltas {
+            let incident = delta.toIncident()
+
+            // ── Audit trail entry (HMAC-signed, chain-linked) ──────────────────
+            let action: AuditAction = switch delta.kind {
+            case .added:    .persistenceAdded
+            case .removed:  .persistenceRemoved
+            case .modified: .persistenceModified
+            }
+            recordAudit(action, incident: incident, details: delta.auditDetail)
+
+            switch delta.kind {
+
+            case .added, .modified:
+                // Avoid duplicating an incident that the periodic scan already saw.
+                guard incidents.first(where: { $0.family == incident.family }) == nil else { continue }
+                var stamped = incident
+                stamped.suppressedAt = suppressedKeys.contains(incident.suppressionKey)
+                    ? Date() : nil
+                incidents.insert(stamped, at: 0)
+                newFamilies.insert(incident.family)
+
+            case .removed:
+                // Resolve any active incident whose rawDetail matches the removed path.
+                incidents = incidents.map { var i = $0
+                    if i.rawDetail == delta.record.path && i.status == .active {
+                        i.resolve()
+                    }
+                    return i
+                }
+            }
+        }
+
+        // Re-sort and recompute risk score atomically
+        incidents = incidents.sorted(by: incidentSort)
+        riskScore = weightedRiskScore(from: incidents)
+
+        // Save a scan-history record so the trend graph reflects live changes.
+        let active2 = incidents.filter { $0.status == .active && !isSuppressed($0) }
+        let deltaRecord = ScanRecord(
+            riskScore:     riskScore,
+            activeCount:   active2.count,
+            resolvedCount: resolvedCount,
+            highCount:     active2.filter { $0.severity == .high   }.count,
+            mediumCount:   active2.filter { $0.severity == .medium }.count,
+            lowCount:      active2.filter { $0.severity == .low    }.count
+        )
+        let hq2 = historyQueue
+        Task { [weak self] in
+            let updated = await hq2.append(deltaRecord)
+            await MainActor.run { [weak self] in self?.scanHistory = updated }
+        }
+
+        // Fire notifications for new items (respects user's notification preference)
+        if settings.enableNotifications, !newFamilies.isEmpty {
+            let newActive = active2.filter { newFamilies.contains($0.family) }
+            sendNotifications(for: newActive)
+        }
+
+        // Persist immediately — persistence deltas are high-priority changes
+        // that should survive a restart regardless of when the next full scan fires.
+        IncidentStore.save(incidents)
+    }
+
     // MARK: - Private Helpers
 
     private func recordAudit(
@@ -451,15 +579,23 @@ final class AppModel: NSObject, ObservableObject {
         incident: Incident? = nil,
         details: String
     ) {
-        auditTrail = AuditTrailStore.append(
-            action:         action,
-            incidentFamily: incident?.family,
-            incidentName:   incident?.name,
-            details:        details,
-            operatorName:   NSUserName()
-        )
-        if auditTrail.count > Self.maxAuditEvents {
-            auditTrail = Array(auditTrail.prefix(Self.maxAuditEvents))
+        // Capture non-Sendable closure captures as value types before hopping off-actor.
+        let fam  = incident?.family
+        let nam  = incident?.name
+        let op   = NSUserName()
+        let q    = auditQueue
+        let max  = Self.maxAuditEvents
+        Task { [weak self] in
+            // I/O runs inside the actor — off the main thread.
+            var updated = await q.append(
+                action:         action,
+                incidentFamily: fam,
+                incidentName:   nam,
+                details:        details,
+                operatorName:   op
+            )
+            if updated.count > max { updated = Array(updated.prefix(max)) }
+            await MainActor.run { [weak self] in self?.auditTrail = updated }
         }
     }
 
@@ -505,12 +641,15 @@ final class AppModel: NSObject, ObservableObject {
             launches  = snapshot.launches
             riskScore = weightedRiskScore(from: incidents)
             status    = monitoringTask == nil ? .stopped : .running
-     
+
             if let sel = selectedIncident {
                 selectedIncident = incidents.first(where: {
                     $0.family == sel.family && !isSuppressed($0)
                 })
             }
+
+            // Persist so the next cold launch has data immediately.
+            IncidentStore.save(incidents)
         }
 
     private func incidentSort(_ l: Incident, _ r: Incident) -> Bool {

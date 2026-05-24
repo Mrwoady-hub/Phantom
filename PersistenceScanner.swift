@@ -26,6 +26,11 @@ struct PersistenceRecord: Identifiable, Hashable, Sendable {
 
 final class PersistenceScanner {
 
+    // nonisolated: PersistenceScanner is a stateless file-system reader.
+    // It has no stored mutable state. Called from TelemetrySnapshot static
+    // async methods that run off the main actor.
+    nonisolated init() {}
+
     func scanLaunchAgentRecords() -> [PersistenceRecord] {
         var findings: [PersistenceRecord] = []
 

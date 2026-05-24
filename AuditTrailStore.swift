@@ -21,10 +21,10 @@ enum AuditTrailStore {
 
     // MARK: - Storage
 
-    private static let directoryName = "Phantom"
-    private static let fileName      = "Phantom-AuditTrail.json"
+    nonisolated private static let directoryName = "Phantom"
+    nonisolated private static let fileName      = "Phantom-AuditTrail.json"
 
-    private static var fileURL: URL {
+    nonisolated private static var fileURL: URL {
         let base = FileManager.default.urls(
             for: .applicationSupportDirectory,
             in: .userDomainMask
@@ -116,7 +116,7 @@ enum AuditTrailStore {
 
     // MARK: - Public Interface
 
-    static func load() -> [AuditEvent] {
+    nonisolated static func load() -> [AuditEvent] {
         guard let data = try? Data(contentsOf: fileURL) else { return [] }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -127,7 +127,7 @@ enum AuditTrailStore {
     /// The ONLY correct way to persist events. Normalizes and re-seals the chain.
     /// Direct callers outside this enum should use `append()` — not this method —
     /// to ensure the chain is maintained incrementally rather than recomputed wholesale.
-    static func save(_ events: [AuditEvent]) {
+    nonisolated static func save(_ events: [AuditEvent]) {
         let encoder = JSONEncoder()
         encoder.outputFormatting    = [.prettyPrinted, .sortedKeys]
         encoder.dateEncodingStrategy = .iso8601
@@ -143,7 +143,7 @@ enum AuditTrailStore {
 
     /// Appends one event to the chain. This is the correct call site for all audit
     /// recording. Returns the full trail sorted descending (newest first).
-    static func append(
+    nonisolated static func append(
         action: AuditAction,
         incidentFamily: String? = nil,
         incidentName: String? = nil,
@@ -174,7 +174,7 @@ enum AuditTrailStore {
 
     // MARK: - Chain Normalization
 
-    private static func normalize(_ events: [AuditEvent]) -> [AuditEvent] {
+    nonisolated private static func normalize(_ events: [AuditEvent]) -> [AuditEvent] {
         let sorted: [AuditEvent] = events.sorted { (lhs: AuditEvent, rhs: AuditEvent) -> Bool in
             lhs.sequenceNumber == rhs.sequenceNumber
                 ? lhs.timestamp < rhs.timestamp
@@ -203,7 +203,7 @@ enum AuditTrailStore {
 
     // MARK: - Hashing
 
-    private static func stamped(_ event: AuditEvent) -> AuditEvent {
+    nonisolated private static func stamped(_ event: AuditEvent) -> AuditEvent {
         AuditEvent(
             id:             event.id,
             timestamp:      event.timestamp,
@@ -247,7 +247,7 @@ enum AuditTrailStore {
         UserDefaults.standard.set(true, forKey: flagKey)
     }
 
-    static func hash(for event: AuditEvent) -> String {
+    nonisolated static func hash(for event: AuditEvent) -> String {
         let payload = [
             event.id.uuidString,
             ISO8601DateFormatter().string(from: event.timestamp),

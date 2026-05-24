@@ -28,6 +28,12 @@ struct ProcessEntry: Sendable {
 
 final class ProcessMonitor {
 
+    // nonisolated: ProcessMonitor is a stateless subprocess wrapper.
+    // It has no stored state and all methods use async/await internally.
+    // Explicit annotation required because the project's -default-isolation
+    // MainActor would otherwise make init() @MainActor, blocking TelemetrySnapshot.
+    nonisolated init() {}
+
     func runningProcesses(limit: Int = 512) async -> [ProcessEntry] {
         let raw = await runPS(timeout: 4.0)
         guard !raw.isEmpty else { return [] }

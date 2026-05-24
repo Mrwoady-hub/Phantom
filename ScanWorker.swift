@@ -19,6 +19,7 @@ actor ScanWorker {
     private let suricata     = SuricataScanner()
     private let ngrep        = NgrepScanner()
     private let networkMiner = NetworkMinerScanner()
+    private let lsof         = LsofScanner()          // built-in macOS, no tools needed
 
     // MARK: - Suricata helpers
 
@@ -53,5 +54,10 @@ actor ScanWorker {
 
     func runNetworkMiner(pcapPath: String) -> [PacketEvent] {
         networkMiner.extractArtifacts(from: pcapPath)
+    }
+
+    /// Enumerate live connections via built-in `lsof -i -n -P` — always available.
+    func runLsof() -> [PacketEvent] {
+        lsof.scan()
     }
 }
