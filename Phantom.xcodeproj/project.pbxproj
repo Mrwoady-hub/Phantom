@@ -50,12 +50,16 @@
 		B30000110000000000C52EE0 /* RiskScoringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000100000000000C52EE0 /* RiskScoringTests.swift */; };
 		B30000130000000000C52EE0 /* ThreatIntelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000120000000000C52EE0 /* ThreatIntelTests.swift */; };
 		B30000150000000000C52EE0 /* MitreMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000140000000000C52EE0 /* MitreMappingTests.swift */; };
+		B30000170000000000C52EE0 /* HelperCaptureOutputTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000160000000000C52EE0 /* HelperCaptureOutputTests.swift */; };
+		B30000180000000000C52EE0 /* HelperCaptureOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000232F72000000C52EE0 /* HelperCaptureOutput.swift */; };
 		C40000012F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000082F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift */; };
 		C40000022F72000000C52EE0 /* PrivilegedHelperClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000092F72000000C52EE0 /* PrivilegedHelperClient.swift */; };
 		C40000042F72000000C52EE0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400000B2F72000000C52EE0 /* main.swift */; };
 		C40000052F72000000C52EE0 /* PrivilegedHelperDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400000C2F72000000C52EE0 /* PrivilegedHelperDelegate.swift */; };
 		C40000062F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000082F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift */; };
 		C40000072F72000000C52EE0 /* com.woady.phantom.helper in Copy Helper */ = {isa = PBXBuildFile; fileRef = C400000D2F72000000C52EE0 /* com.woady.phantom.helper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C40000202F72000000C52EE0 /* HelperPeerValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000212F72000000C52EE0 /* HelperPeerValidator.swift */; };
+		C40000222F72000000C52EE0 /* HelperCaptureOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40000232F72000000C52EE0 /* HelperCaptureOutput.swift */; };
 		2CD01EA12C0F6C641DCF7603 /* PacketEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A675BA57572583DC9B113E7 /* PacketEvent.swift */; };
 		0C06ABEC8501677DE7108AA4 /* TSharkScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68F1F7C637923BEF3D2B622D /* TSharkScanner.swift */; };
 		8518B43519467A107C18D4A9 /* TcpdumpScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B97C99A1D1E9C0A40A38D /* TcpdumpScanner.swift */; };
@@ -145,6 +149,7 @@
 		B30000100000000000C52EE0 /* RiskScoringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskScoringTests.swift; sourceTree = "<group>"; };
 		B30000120000000000C52EE0 /* ThreatIntelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreatIntelTests.swift; sourceTree = "<group>"; };
 		B30000140000000000C52EE0 /* MitreMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MitreMappingTests.swift; sourceTree = "<group>"; };
+		B30000160000000000C52EE0 /* HelperCaptureOutputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperCaptureOutputTests.swift; sourceTree = "<group>"; };
 		C40000082F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGPrivilegedHelperProtocol.swift; sourceTree = "<group>"; };
 		C40000092F72000000C52EE0 /* PrivilegedHelperClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivilegedHelperClient.swift; sourceTree = "<group>"; };
 		C400000B2F72000000C52EE0 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -152,6 +157,8 @@
 		C400000D2F72000000C52EE0 /* com.woady.phantom.helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = com.woady.phantom.helper; sourceTree = BUILT_PRODUCTS_DIR; };
 		C400000E2F72000000C52EE0 /* Phantom.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Phantom.entitlements; sourceTree = "<group>"; };
 		C400000F2F72000000C52EE0 /* PrivilegedHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PrivilegedHelper.entitlements; sourceTree = "<group>"; };
+		C40000212F72000000C52EE0 /* HelperPeerValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperPeerValidator.swift; sourceTree = "<group>"; };
+		C40000232F72000000C52EE0 /* HelperCaptureOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperCaptureOutput.swift; sourceTree = "<group>"; };
 		3A675BA57572583DC9B113E7 /* PacketEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketEvent.swift; sourceTree = "<group>"; };
 		68F1F7C637923BEF3D2B622D /* TSharkScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSharkScanner.swift; sourceTree = "<group>"; };
 		031B97C99A1D1E9C0A40A38D /* TcpdumpScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TcpdumpScanner.swift; sourceTree = "<group>"; };
@@ -284,6 +291,7 @@
 				B30000100000000000C52EE0 /* RiskScoringTests.swift */,
 				B30000120000000000C52EE0 /* ThreatIntelTests.swift */,
 				B30000140000000000C52EE0 /* MitreMappingTests.swift */,
+				B30000160000000000C52EE0 /* HelperCaptureOutputTests.swift */,
 			);
 			path = PhantomTests;
 			sourceTree = "<group>";
@@ -293,6 +301,8 @@
 			children = (
 				C400000B2F72000000C52EE0 /* main.swift */,
 				C400000C2F72000000C52EE0 /* PrivilegedHelperDelegate.swift */,
+				C40000212F72000000C52EE0 /* HelperPeerValidator.swift */,
+				C40000232F72000000C52EE0 /* HelperCaptureOutput.swift */,
 				C400000F2F72000000C52EE0 /* PrivilegedHelper.entitlements */,
 			);
 			path = PrivilegedHelper;
@@ -479,6 +489,8 @@
 				B30000110000000000C52EE0 /* RiskScoringTests.swift in Sources */,
 				B30000130000000000C52EE0 /* ThreatIntelTests.swift in Sources */,
 				B30000150000000000C52EE0 /* MitreMappingTests.swift in Sources */,
+				B30000170000000000C52EE0 /* HelperCaptureOutputTests.swift in Sources */,
+				B30000180000000000C52EE0 /* HelperCaptureOutput.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,6 +501,8 @@
 				C40000062F72000000C52EE0 /* SGPrivilegedHelperProtocol.swift in Sources */,
 				C40000042F72000000C52EE0 /* main.swift in Sources */,
 				C40000052F72000000C52EE0 /* PrivilegedHelperDelegate.swift in Sources */,
+				C40000202F72000000C52EE0 /* HelperPeerValidator.swift in Sources */,
+				C40000222F72000000C52EE0 /* HelperCaptureOutput.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
