@@ -31,7 +31,10 @@ struct SettingsView: View {
 
             Section("Notifications") {
                 Toggle("Enable notifications", isOn: $model.settings.enableNotifications)
-                    .onChange(of: model.settings.enableNotifications) { _, enabled in
+                    // macOS 13 form: single-parameter closure receiving the new value.
+                    // The macOS 14 (oldValue, newValue) overload would raise the
+                    // deployment floor unnecessarily.
+                    .onChange(of: model.settings.enableNotifications) { enabled in
                         if enabled { model.requestNotificationPermission() }
                     }
 

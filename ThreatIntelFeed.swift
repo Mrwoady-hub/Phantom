@@ -34,6 +34,12 @@ actor ThreatIntelFeed {
         ).first!
         let dir = base.appendingPathComponent(directoryName, isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        // SECURITY: 0700 on the directory matches AuditTrailStore / SuppressionStore —
+        // only the owning user may list or traverse it.
+        try? FileManager.default.setAttributes(
+            [.posixPermissions: 0o700],
+            ofItemAtPath: dir.path
+        )
         return dir.appendingPathComponent(cacheFileName)
     }
 
